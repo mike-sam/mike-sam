@@ -160,7 +160,19 @@
   // $('#gscript').ready(function () {
   //   $('#loading-wrapper').css('display', 'none');
   // });
+  function setHeight() {
+      $('#gscript').height( window.innerHeight );
+      prevPageHeight = window.innerHeight;
+  }
   $('#gscript').on('load', function(){
+    var prevPageHeight = 0;
+    setInterval( function() {
+      if ( window.innerHeight != prevPageHeight ) {
+        setHeight();
+      }
+    }, 500);
+    
+    setHeight();
     $('#loading-wrapper').css('display', 'none');
   });
 </script>
