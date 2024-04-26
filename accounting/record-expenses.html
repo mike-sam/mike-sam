@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.2</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.2a</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -391,14 +391,16 @@
             return null;
         }
 
-        document.addEventListener('click',function(){
+        document.getElementById('content-amount').addEventListener('click',function(){
             const inputField = document.getElementById('content-amount');
-            inputField.value = inputField.value.toString().slice(0,-1); 
-            document.getElementById('o').innerHTML = '尚未输入任何金额啊！';
-            setTimeout(()=>{
-                document.getElementById('o').innerHTML = '';
-
-            },1000);
+            if(inputField.value.toString().trim() == ''){
+                document.getElementById('o').innerHTML = '尚未输入任何金额啊！';
+                setTimeout(()=>{
+                    document.getElementById('o').innerHTML = '';
+                },1000);
+            } else {
+                inputField.value = inputField.value.toString().slice(0,-1); 
+            }
         });
 
         document.querySelectorAll('.calc-key').forEach(button => {
