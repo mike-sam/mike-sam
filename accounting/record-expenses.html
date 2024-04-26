@@ -123,11 +123,11 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.10</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.11</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
-        <input type="text" id="content-input" placeholder="例如：[吃饭]">
+        <input type="text" id="content-input" autofocus placeholder="例如：[吃饭]">
         <div id="tag-container">
         </div>
         <!--<label for="content-amount">金额:</label>-->
@@ -225,7 +225,7 @@
                 document.getElementById("content-input").focus();
                 return;
             }
-            if(trim(amount) == ''){
+            if(trim(amount) == '' || trim(amount) == 'Error' || (isNaN(parseInt(amount)) && parseInt(amount) == 0) ){
                 document.getElementById("keypad").focus();
                 return;
             }
@@ -258,7 +258,7 @@
             // Usage example
             var myElement = document.getElementById('content-input');
             var modalFadeInDuration = 300;
-            focusAndOpenKeyboard(myElement, modalFadeInDuration); // or without the second argument
+            // focusAndOpenKeyboard(myElement, modalFadeInDuration); // or without the second argument
             // setTimeout(()=>{
             //     document.getElementById("content-input").focus();
             // },500);
@@ -332,6 +332,7 @@
                 } else if (this.textContent === '=') {
                     try {
                         inputField.value = eval(inputField.value);
+                        toggleSubmitButton();
                     } catch (e) {
                         inputField.value = 'Error';
                     }
@@ -342,6 +343,11 @@
         });
 
         window.onload = fetchDataAndExtractTags;
+        document.addEventListener('DOMContentLoaded', () => {
+            Array.prototype.slice.call(document.querySelectorAll('input'))
+                .filter((el) => el.hasAttribute('autofocus'))[0]
+                .focus()
+        })
         document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
         document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
