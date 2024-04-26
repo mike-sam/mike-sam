@@ -74,10 +74,13 @@
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
             // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
             window.location.href = shortcutUrl;
-            setTimeout(()=>{
-                window.close();
-            },500)
+            leave();
 
+        }
+        function leave() {
+            var myWindow = window.open("", "_self");
+            myWindow.document.write("");
+            setTimeout (function() {myWindow.close();},1000);
         }
 
         async function fetchDataAndExtractTags() {
@@ -86,7 +89,7 @@
 
         window.onload = fetchDataAndExtractTags;
 
-        document.getElementById(content-input).addEventListener(input, toggleSubmitButton);
+        document.getElementById("content-input").addEventListener(input, toggleSubmitButton);
     </script>
 </body>
 </html>
