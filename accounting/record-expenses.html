@@ -13,7 +13,7 @@
         .tag {
             display: inline-block;
             padding: 5px 10px;
-            margin: 5px;
+            margin: 5px 5px 0px 0px;
             background-color: #bfe2ff;
             border-radius: 5px;
             cursor: pointer;
@@ -29,7 +29,8 @@
             grid-auto-flow: row;
             grid-auto-columns: 1fr;
             width: calc(100% - 10px);
-            padding: 0px 5px;
+            padding: 0px 5px 0px 0px;
+            padding-right: 10px;
         }
         #keypad {
             display: grid;
@@ -57,7 +58,7 @@
             /* max-width: 50vw; */
         }
         #content-input {
-            width: calc(100% - 20px);
+            width: 100%;
         }
         #content-amount {
             text-align: right;
@@ -67,7 +68,7 @@
         }
         #content-remark {
             width: calc(100% - 10px);
-            padding: 0px 5px;
+            padding: 10px;
             /* resize: none; */
         }
         #tag-container {
@@ -103,9 +104,10 @@
         }
         .btn {
             padding: 5px;
-            margin: 5px;
+            margin: 5px 0px;
             border: 0px;
             border-radius: 5px;
+            background-color: transparent;
         }
         .btn:hover{
             background-color: #6940ff;
@@ -123,7 +125,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.20</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.21</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -132,7 +134,7 @@
         </div>
         <!--<label for="content-amount">金额:</label>-->
     </div>
-    <div class="row row-no-wrap">
+    <div class="row row-no-wrap m-10">
         <div id="calculator">
             <div id="keypad">
                 <input type="text" id="content-amount" placeholder="输入金额" readonly>
@@ -170,7 +172,7 @@
             let interacted = false;
             const onTouchStart = ()=>{
                 interacted = true
-                document.removeEventListener(onTouchStart)
+                document.removeEventListener('touchstart',onTouchStart)
             }
             document.addEventListener('touchstart', onTouchStart);
             return () => interacted
@@ -189,8 +191,14 @@
                 case FOCUS_TYPES.FAKE:
                     input.classList.add('has-focus')
                     const onBlur = (input) => {
-                        input.classList.remove('has-focus')
-                        document.removeEventListener(onBlur)
+                        console.log(input);
+                        if(input.hasOwnProperty('classList')){
+                            console.log(input.classList);
+                            if(input.classList.includes('has-focus')){
+                                input.classList.remove('has-focus')
+                            }
+                        }
+                        document.removeEventListener(input,onBlur)
                     }
                     input.addEventListener('blur', onBlur)
                     input.scrollIntoView();
@@ -222,6 +230,7 @@
             selectedTag = tagName;
             renderTags();
             toggleSubmitButton();
+            focusAutofocus();
         }
 
         
@@ -236,7 +245,7 @@
                 canSubmit = false;
             }
             const contentAmount = document.getElementById("content-amount").value;
-            if(contentAmount.trim() == '' || contentAmount.trim() == 'Error' || (isNaN(parseInt(contentAmount)) && parseInt(contentAmount) == 0)){
+            if(contentAmount.trim() == '' || contentAmount.trim() == 'Error' || contentAmount.includes('undefined') || isNaN(contentAmount) || isNaN(parseInt(contentAmount)) || contentAmount == Infinity || parseInt(contentAmount) == 0 || contentAmount.toString().indexOf('0') == 0 ){
                 canSubmit = false;
             }
 
@@ -275,10 +284,7 @@
                 // document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
                 document.getElementById("content-location").value = gmap_url;
                 // document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn" onclick="window.open('${gmap_url}','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')">目前所在位置: 透过Maps打开查看</button>`;
-                document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn disabled">已获取目前位置,提交表单时将一同记录。</button>`;
-                Array.prototype.slice.call(document.querySelectorAll('input'))
-                    .filter((el) => el.hasAttribute('autofocus'))[0]
-                    .focus();
+                document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn">已获取目前位置,提交表单时将一同记录。</button>`;
             });
         } else {
             document.getElementById("content-location").value = "Geolocation is not supported by this browser.";
@@ -349,54 +355,29 @@
             return null;
         }
 
-       
-        function focusAndOpenKeyboard(el, timeout) {
-            if(!timeout) {
-                timeout = 100;
-            }
-            if(el) {
-                // Align temp input element approximately where the input element is
-                // so the cursor doesn't jump around
-                var __tempEl__ = document.createElement('input');
-                __tempEl__.style.position = 'absolute';
-                __tempEl__.style.top = (el.offsetTop + 7) + 'px';
-                __tempEl__.style.left = el.offsetLeft + 'px';
-                __tempEl__.style.height = 0;
-                __tempEl__.style.opacity = 0;
-                // Put this temp element as a child of the page <body> and focus on it
-                document.body.appendChild(__tempEl__);
-                __tempEl__.focus();
-
-                // The keyboard is open. Now do a delayed focus on the target element
-                setTimeout(function() {
-                    el.setAttribute('autofocus','autofocus');
-                    el.focus();
-                    el.click();
-                    // Remove the temp element
-                    document.body.removeChild(__tempEl__);
-                }, timeout);
-            }
-        }
-
         
         document.querySelectorAll('.calc-key').forEach(button => {
             button.addEventListener('click', function() {
+                
                 const inputField = document.getElementById('content-amount');
                 if (this.textContent === 'C') {
                     inputField.value = '';
                 } else if (this.textContent === '=') {
                     try {
                         inputField.value = eval(inputField.value);
+                        focusAutofocus();
                     } catch (e) {
                         inputField.value = 'Error';
                     }
                 } else {
                     inputField.value += this.textContent;
                 }
+                toggleSubmitButton();
             });
         });
         document.getElementById('content-amount').addEventListener('change', function() {
-            toggleSubmitButton();
+            console.log('amount changed');
+            
         });
 
         window.onload = fetchDataAndExtractTags;
@@ -404,8 +385,9 @@
             let autofocusedInput = Array.prototype.slice.call(
                     document.querySelectorAll('input')
                 ).filter((el) => el.hasAttribute('autofocus'))[0]
-            
-            focus(autofocusedInput);
+            if(autofocusedInput !== undefined){
+                focus(autofocusedInput);
+            }
         }
         document.addEventListener('DOMContentLoaded', focusAutofocus);
         document.body.ontouchstart = focusAutofocus;
