@@ -20,9 +20,13 @@
     </style>
 </head>
 <body>
-    <b style="color:#ccc;">v2</b>
+    <b style="color:#ccc;">v3</b>
+    <br><br>
     <label for="content-input">明目:</label>
-    <input type="text" id="content-input" placeholder="明目 金额，需要空格，例如：[吃饭 12]">
+    <input type="text" id="content-input" placeholder="明目 例如：[吃饭]">
+    <br>
+    <label for="content-number">金额:</label>
+	<input type="number" id="content-number" placeholder="金额，例如：[12]">
     <br><br>
     <div id="tag-container">
     </div>
@@ -70,8 +74,10 @@
 
         
         function submitData() {
-            const contentInput = document.getElementById("content-input").value;
-            const [title, amount] = contentInput.split(" ");
+            const title = document.getElementById("content-input").value;
+            const amount = document.getElementById("content-number").value;
+            // const contentInput = document.getElementById("content-input").value;
+            // const [title, amount] = contentInput.split(" ");
             let submitted_value = title+' '+amount+' '+selectedTag;
             const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
@@ -79,6 +85,7 @@
             window.location.href = shortcutUrl;
             document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
             document.getElementById("content-input").value = '';
+            document.getElementById("content-number").value = 0;
             selectedTag = null;
             selectTag('');
             // cleanPageAndLeave();
@@ -91,12 +98,48 @@
         }
 
         async function fetchDataAndExtractTags() {
+            const submitButton = document.getElementById("submit-btn");
+            submitButton.classList.add("disabled");
             renderTags();
+        }
+        
+        let possibleTag = {
+            '餐饮美食': ['dinner','吃饭','晚餐','brunch','breakfast','lunch','午餐','早午餐'],
+            '交通出行': ['打油'],
+        };
+        function findTagKey(inputText) {
+            for (let tag in possibleTag) {
+                // 检查输入文本是否包含当前标签的任何词汇
+                if (possibleTag[tag].some(keyword => inputText.includes(keyword))) {
+                    return tag;
+                }
+            }
+            // 如果没有找到匹配的标签，返回空字符串
+            return '';
+        }
+
+        function toggleNumberInput(event){
+        // 检查是否按下了 Return 键（keyCode为13），且不是最后一个输入框
+        
+            if (event.keyCode === 13) {
+                // 阻止默认行为（防止换行）
+                event.preventDefault();
+                // 将焦点移动到下一个输入框
+                document.getElementById("content-number").focus();
+            }
+            let inputValue = document.getElementById("content-input").value;
+            if (selectedTag == null){
+                selectedTag = findTagKey(inputValue);
+                renderTags();
+            }
+
+
         }
 
         window.onload = fetchDataAndExtractTags;
 
-        document.getElementById("content-input").addEventListener(input, toggleSubmitButton);
+        document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
+        document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
 </body>
 </html>
