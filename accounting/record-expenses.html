@@ -117,10 +117,13 @@
         .btn-submit {
             background-color: #e4ddff;
         }
+        .disabled {
+            background-color: #ccc;
+        }
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.7</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.8</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -252,6 +255,11 @@
             const submitButton = document.getElementById("button-submit");
             submitButton.classList.add("disabled");
             renderTags();
+            document.getElementById('o').innerHTML = 'loaded';
+            setTimeout(()=>{
+                document.getElementById("content-input").focus();
+                document.getElementById('o').innerHTML = '';
+            },2000);
             // setTimeout(()=>{
             //     document.getElementById("content-input").focus();
             // },500);
@@ -305,12 +313,6 @@
         });
 
         window.onload = fetchDataAndExtractTags;
-        document.body.onloadeddata = function() {
-            document.getElementById('o').innerHTML = 'loaded';
-            setTimeout(()=>{
-                document.getElementById("content-input").focus();
-            },1000);
-         };
         document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
         document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
