@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.22b</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.23</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -295,11 +295,11 @@
             const remark = document.getElementById("content-remark").value;
             const location = document.getElementById("content-location").value;
             const separator = '|'
-            if(trim(title) == ''){
+            if(title.trim() == ''){
                 document.getElementById("content-input").focus();
                 return;
             }
-            if(trim(amount) == '' || trim(amount) == 'Error' || (isNaN(parseInt(amount)) && parseInt(amount) == 0) ){
+            if(amount.trim() == '' || amount.trim() == 'Error' || amount.includes('undefined') || isNaN(amount) || isNaN(parseInt(amount)) || amount == Infinity || parseInt(amount) == 0 || amount.toString().indexOf('0') == 0 ){
                 document.getElementById("keypad").focus();
                 return;
             }
