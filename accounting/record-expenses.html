@@ -123,7 +123,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.13a</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.14</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -320,11 +320,15 @@
         function toggleNumberInput(event){
         // 检查是否按下了 Return 键（keyCode为13），且不是最后一个输入框
             let inputValue = document.getElementById("content-input").value;
+            if(trim(inputValue) != ''){
+                document.getElementById("content-input").removeAttribute('autofocus');
+            }
             let relevantKey = findTagKey(inputValue);
             if (selectedTag != relevantKey){
                 selectedTag = relevantKey;
                 renderTags();
             }
+            
             if (event.keyCode === 13) {
                 // 阻止默认行为（防止换行）
                 event.preventDefault();
@@ -381,13 +385,15 @@
         });
 
         window.onload = fetchDataAndExtractTags;
-        document.addEventListener('DOMContentLoaded', () => {
+        function focusAutofocus(){
             const autofocusedInput = Array.prototype.slice.call(
                     document.querySelectorAll('input')
                 ).filter((el) => el.hasAttribute('autofocus'))[0]
             
-            focus(autofocusedInput)
-        })
+            focus(autofocusedInput);
+        }
+        document.addEventListener('DOMContentLoaded', focusAutofocus);
+        document.body.ontouchstart = focusAutofocus;
         document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
         document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
