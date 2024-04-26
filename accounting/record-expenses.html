@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.23</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.0</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -206,6 +206,17 @@
         }
         
         let tags = ['餐饮美食','日常购物','医疗保健','交通出行','休闲娱乐','服饰美容','旅游放松','水电网','人情往来','家居硬体','房贷房租物管','车贷','宠物','其他']; 
+        let possibleTag = {
+            '餐饮美食': ['dinner','吃饭','晚餐','brunch','breakfast','lunch','午餐','早午餐'],
+            '交通出行': ['打油'],
+            '车贷': ['WD6060E'],
+        };
+        let titleToAmount = {
+            'WD6060E': 2175,
+        };
+        let customTextarea = {
+            '打油': 'ODO：\nTrip：\nRon95'
+        }
         let selectedTag = null; 
 
         
@@ -228,6 +239,25 @@
         
         function selectTag(tagName) {
             selectedTag = tagName;
+            let eleTitle = document.getElementById("content-input");
+            let eleAmount = document.getElementById("content-amount");
+            let eleRemark = document.getElementById("content-remark");
+            if (eleTitle.value.trim() == ''){
+                if(possibleTag.hasOwnProperty(selectedTag)){
+                    if(possibleTag[selectedTag].length == 1){
+                        let autoSuggestedValue = possibleTag[selectedTag][0]
+                        eleTitle.value = autoSuggestedValue;
+                        if (titleToAmount.hasOwnProperty(autoSuggestedValue)){
+                            eleAmount.value = titleToAmount[autoSuggestedValue];
+
+                        }
+                        if (customTextarea.hasOwnProperty(autoSuggestedValue)){
+                            eleRemark.value = customTextarea[autoSuggestedValue];
+                        } 
+                        eleTitle.setAttribute('autoSuggested','autoSuggested');
+                    }
+                }
+            }
             renderTags();
             toggleSubmitButton();
             focusAutofocus();
@@ -236,7 +266,8 @@
         
         function toggleSubmitButton() {
             let canSubmit = true;
-            const contentInput = document.getElementById("content-input").value;
+            const eleTitle = document.getElementById("content-input");
+            const contentInput = eleTitle.value;
             
             if(contentInput.trim() !== ''){
                 document.getElementById("content-input").removeAttribute('autofocus');
@@ -248,10 +279,15 @@
             if(contentAmount.trim() == '' || contentAmount.trim() == 'Error' || contentAmount.includes('undefined') || isNaN(contentAmount) || isNaN(parseInt(contentAmount)) || contentAmount == Infinity || parseInt(contentAmount) == 0 || contentAmount.toString().indexOf('0') == 0 ){
                 canSubmit = false;
             }
+            if(eleTitle.hasAttribute('autoSuggested')){
+                let relevantKey = findTagKey(contentInput);
+                if(selectedTag != relevantKey && relevantKey != null){
+                    selectTag(relevantKey);
+                    document.getElementById('o').innerHTML = 'title auto suggested, in order to change tag, please alter the title.';
+                }
+            } else {
 
-            let relevantKey = findTagKey(contentInput);
-            if(selectedTag != relevantKey && relevantKey != null){
-                selectTag(relevantKey);
+                document.getElementById('o').innerHTML = '';
             }
             if (selectedTag == null){
                 canSubmit = false;
@@ -263,14 +299,18 @@
                 submitButton.classList.add("disabled");
             }
         }
-        function focusRemarkTextarea(event){            
+        function focusRemarkTextarea(event){          
+            const eleTitle = document.getElementById("content-input");
+            const eleRemark = document.getElementById("content-remark");
+            
             // 检查是否按下了 Return 键（keyCode为13），且不是最后一个输入框
             if (event.keyCode === 13) {
                 // 阻止默认行为（防止换行）
                 event.preventDefault();
                 // 将焦点移动到下一个输入框
-                document.getElementById("content-remark").focus();
+                eleRemark.focus();
             }
+            eleTitle.removeAttribute('autoSuggested');
         }
 
 
@@ -338,10 +378,7 @@
             // },500);
         }
         
-        let possibleTag = {
-            '餐饮美食': ['dinner','吃饭','晚餐','brunch','breakfast','lunch','午餐','早午餐'],
-            '交通出行': ['打油'],
-        };
+        
         function findTagKey(inputText) {
             for (let tag in possibleTag) {
                 // 检查输入文本是否包含当前标签的任何词汇
