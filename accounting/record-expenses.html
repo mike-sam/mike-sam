@@ -26,6 +26,8 @@
             place-items: center;
             grid-auto-flow: row;
             grid-auto-columns: 1fr;
+            width: calc(100% - 10px);
+            padding: 0px 5px;
         }
         #keypad {
             display: grid;
@@ -62,7 +64,8 @@
             max-width: 50vw;
         }
         #content-remark {
-            width: 100%;
+            width: calc(100% - 10px);
+            padding: 0px 5px;
             /* resize: none; */
         }
         #tag-container {
@@ -117,7 +120,7 @@
 <body>
     <span>Expenses record tools  - integrated with iOS Shortcuts - <b style="color:#ccc;">v3.2.2</b></span>
     
-    <div class="row row-wrap">
+    <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
         <input type="text" id="content-input" placeholder="例如：[吃饭]">
         <div id="tag-container">
@@ -237,7 +240,9 @@
             const submitButton = document.getElementById("button-submit");
             submitButton.classList.add("disabled");
             renderTags();
-            document.getElementById("content-input").focus();
+            setTimeout(()=>{
+                document.getElementById("content-input").focus();
+            },500);
         }
         
         let possibleTag = {
