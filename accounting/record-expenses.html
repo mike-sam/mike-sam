@@ -120,7 +120,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.5</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.6</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -268,7 +268,6 @@
                 }
             }
             // 如果没有找到匹配的标签，返回空字符串
-            document.getElementById("content-remark").focus();
             return '';
         }
 
@@ -284,7 +283,7 @@
                 // 阻止默认行为（防止换行）
                 event.preventDefault();
                 // 将焦点移动到下一个输入框
-                document.getElementById("content-amount").focus();
+                document.getElementById("content-remark").focus();
             }
         }
         document.querySelectorAll('.calc-key').forEach(button => {
@@ -305,7 +304,7 @@
         });
 
         window.onload = fetchDataAndExtractTags;
-        document.body.ontouchend = function() { document.getElementById("content-input").focus(); };
+        document.body.onloadeddata = function() { document.getElementById("content-input").focus(); };
         document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
         document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
