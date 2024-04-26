@@ -120,7 +120,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.6</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.7</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -187,7 +187,8 @@
                 let gmap_url = `https://maps.google.com/maps?q=${latitude},${longitude}`;
                 // document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
                 document.getElementById("content-location").value = gmap_url;
-                document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn" onclick="window.open('${gmap_url}','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')">目前所在位置: 透过Maps打开查看</button>`;
+                // document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn" onclick="window.open('${gmap_url}','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')">目前所在位置: 透过Maps打开查看</button>`;
+                document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn disabled">已获取目前位置,提交表单时将一同记录。</button>`;
             });
         } else {
             document.getElementById("content-location").value = "Geolocation is not supported by this browser.";
@@ -304,7 +305,12 @@
         });
 
         window.onload = fetchDataAndExtractTags;
-        document.body.onloadeddata = function() { document.getElementById("content-input").focus(); };
+        document.body.onloadeddata = function() {
+            document.getElementById('o').innerHTML = 'loaded';
+            setTimeout(()=>{
+                document.getElementById("content-input").focus();
+            },1000);
+         };
         document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
         document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
