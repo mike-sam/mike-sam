@@ -123,7 +123,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.13</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.13a</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -168,8 +168,8 @@
         const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i);
         const hasInteracted = (() => {
             let interacted = false;
-            const onTouchStart = {
-                interacted = true,
+            const onTouchStart = ()=>{
+                interacted = true
                 document.removeEventListener(onTouchStart)
             }
             document.addEventListener('touchstart', onTouchStart);
