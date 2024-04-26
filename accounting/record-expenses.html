@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <b style="color:#ccc;">v3</b>
+    <b style="color:#ccc;">v3.1</b>
     <br><br>
     <label for="content-input">明目:</label>
     <input type="text" id="content-input" placeholder="明目 例如：[吃饭]">
@@ -81,14 +81,17 @@
             let submitted_value = title+' '+amount+' '+selectedTag;
             const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
-            // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
-            window.location.href = shortcutUrl;
             document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
-            document.getElementById("content-input").value = '';
-            document.getElementById("content-number").value = 0;
-            selectedTag = null;
-            selectTag('');
-            // cleanPageAndLeave();
+            setTimeout(()=>{
+
+                // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
+                window.location.href = shortcutUrl;
+                document.getElementById("content-input").value = '';
+                document.getElementById("content-number").value = 0;
+                selectedTag = null;
+                selectTag('');
+                // cleanPageAndLeave();
+            },500);
 
         }
         function cleanPageAndLeave() {
@@ -120,18 +123,19 @@
 
         function toggleNumberInput(event){
         // 检查是否按下了 Return 键（keyCode为13），且不是最后一个输入框
-        
+            let inputValue = document.getElementById("content-input").value;
+            let relevantKey = findTagKey(inputValue);
+            if (selectedTag != relevantKey){
+                selectedTag = relevantKey;
+                renderTags();
+            }
             if (event.keyCode === 13) {
                 // 阻止默认行为（防止换行）
                 event.preventDefault();
                 // 将焦点移动到下一个输入框
                 document.getElementById("content-number").focus();
             }
-            let inputValue = document.getElementById("content-input").value;
-            if (selectedTag == null){
-                selectedTag = findTagKey(inputValue);
-                renderTags();
-            }
+            
 
 
         }
