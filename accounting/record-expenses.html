@@ -70,7 +70,7 @@
         function submitData() {
             const contentInput = document.getElementById("content-input").value;
             const [title, amount] = contentInput.split(" ");
-            const shortcutUrl = 'shortcuts://run-shortcut?name=QQ&input=text&text='+encodeURIComponent(title+' '+title+amount+' '+selectedTag);
+            const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(title+' '+amount+' '+selectedTag);
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
             // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
             window.location.href = shortcutUrl;
