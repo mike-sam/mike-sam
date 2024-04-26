@@ -127,7 +127,7 @@
 <body style="display: grid; height: calc(100vh - 50px);">
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.4</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.4a</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -248,6 +248,11 @@
         let eleTitle = document.getElementById("content-input");
         let eleAmount = document.getElementById("content-amount");
         let eleRemark = document.getElementById("content-remark");
+        if(prevSuggestedRemark != null){
+            eleRemark.value = '';
+            prevSuggestedRemark = null;
+            eleTitle.value = '';
+        }
         if (eleTitle.value.trim() == ''){
             if(possibleTag.hasOwnProperty(selectedTag)){
                 if(possibleTag[selectedTag].length == 1){
@@ -260,16 +265,8 @@
                     if (customTextarea.hasOwnProperty(autoSuggestedValue)){
                         eleRemark.value = customTextarea[autoSuggestedValue];
                         prevSuggestedRemark = eleRemark.value;
-                    } else {
-                        if(prevSuggestedRemark != null){
-                            eleRemark.value = '';
-                        }
                     }
                     eleTitle.setAttribute('autoSuggested','autoSuggested');
-                } else {
-                    if(prevSuggestedRemark != null){
-                        eleRemark.value = '';
-                    }
                 }
             }
         }
