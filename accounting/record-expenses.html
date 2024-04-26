@@ -124,324 +124,327 @@
         }
     </style>
 </head>
-<body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.2b</b></span>
-    
-    <div class="row row-wrap m-10 p-10">
-        <!--<label for="content-input">明目:</label>-->
-        <input type="text" id="content-input" autofocus placeholder="例如：[吃饭]">
-        <div id="tag-container">
-        </div>
-        <!--<label for="content-amount">金额:</label>-->
-    </div>
-    <div class="row row-no-wrap m-10">
-        <div id="calculator">
-            <div id="keypad">
-                <button class="calc-key">C</button>
-                <input type="text" id="content-amount" placeholder="(点此可删末端) 0" readonly>
-                <button class="calc-key">1</button>
-                <button class="calc-key">2</button>
-                <button class="calc-key">3</button>
-                <button class="calc-key">+</button>
-                <button class="calc-key">4</button>
-                <button class="calc-key">5</button>
-                <button class="calc-key">6</button>
-                <button class="calc-key">-</button>
-                <button class="calc-key">7</button>
-                <button class="calc-key">8</button>
-                <button class="calc-key">9</button>
-                <button class="calc-key">*</button>
-                <button class="calc-key">0</button>
-                <button class="calc-key">.</button>
-                <button class="calc-key">/</button>
-                <button class="calc-key">=</button>
+<body style="display: grid; height: calc(100vh - 50px);">
+    <div style="align-self: center;">
+
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.3</b></span>
+        
+        <div class="row row-wrap m-10 p-10">
+            <!--<label for="content-input">明目:</label>-->
+            <input type="text" id="content-input" autofocus placeholder="例如：[吃饭]">
+            <div id="tag-container">
             </div>
+            <!--<label for="content-amount">金额:</label>-->
         </div>
-        <textarea id="content-remark" placeholder="关于此笔消费的详细内容"></textarea>
+        <div class="row row-no-wrap m-10">
+            <div id="calculator">
+                <div id="keypad">
+                    <button class="calc-key">C</button>
+                    <input type="text" id="content-amount" placeholder="(点此可删末端) 0" readonly>
+                    <button class="calc-key">1</button>
+                    <button class="calc-key">2</button>
+                    <button class="calc-key">3</button>
+                    <button class="calc-key">+</button>
+                    <button class="calc-key">4</button>
+                    <button class="calc-key">5</button>
+                    <button class="calc-key">6</button>
+                    <button class="calc-key">-</button>
+                    <button class="calc-key">7</button>
+                    <button class="calc-key">8</button>
+                    <button class="calc-key">9</button>
+                    <button class="calc-key">*</button>
+                    <button class="calc-key">0</button>
+                    <button class="calc-key">.</button>
+                    <button class="calc-key">/</button>
+                    <button class="calc-key">=</button>
+                </div>
+            </div>
+            <textarea id="content-remark" placeholder="关于此笔消费的详细内容"></textarea>
+        </div>
+        <button id="button-submit" class="btn-submit btn disabled w-100 m-10" onclick="submitData()">提交</button>
+        <div class="row row-wrap w-100">
+            <span id="geolocation-href" class="w-100"></span>
+            <input type="hidden" id="content-location" readonly>
+        </div>
+        <p id="o"></p>
+        <p id="record"></p>
     </div>
-    <button id="button-submit" class="btn-submit btn disabled w-100 m-10" onclick="submitData()">提交</button>
-    <div class="row row-wrap w-100">
-        <span id="geolocation-href" class="w-100"></span>
-        <input type="hidden" id="content-location" readonly>
-    </div>
-    <p id="o"></p>
-    <p id="record"></p>
-    <script>
-        /* https://medium.com/@brunn/autofocus-in-ios-safari-458215514a5f */
-        const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i);
-        const hasInteracted = (() => {
-            let interacted = false;
-            const onTouchStart = ()=>{
-                interacted = true
-                document.removeEventListener('touchstart',onTouchStart)
-            }
-            document.addEventListener('touchstart', onTouchStart);
-            return () => interacted
-        })()
-        const FOCUS_TYPES = {
-            REAL: 'real',
-            FAKE: 'fake'
-        }
-        const getFocusType = () => (hasInteracted() || !isIos())
-            ? FOCUS_TYPES.REAL
-            : FOCUS_TYPES.FAKE
-        const focus = (input) => {
-            switch (getFocusType()) {
-                case FOCUS_TYPES.REAL:
-                    return input.focus();
-                case FOCUS_TYPES.FAKE:
-                    input.classList.add('has-focus')
-                    const onBlur = (input) => {
-                        console.log(input);
-                        if(input.hasOwnProperty('classList')){
-                            console.log(input.classList);
-                            if(input.classList.includes('has-focus')){
-                                input.classList.remove('has-focus')
-                            }
-                        }
-                        document.removeEventListener(input,onBlur)
-                    }
-                    input.addEventListener('blur', onBlur)
-                    input.scrollIntoView();
-            }
-        }
-        
-        let tags = ['餐饮美食','日常购物','医疗保健','交通出行','休闲娱乐','服饰美容','旅游放松','水电网','人情往来','家居硬体','房贷房租物管','车贷','宠物','其他']; 
-        let possibleTag = {
-            '餐饮美食': ['dinner','吃饭','晚餐','brunch','breakfast','lunch','午餐','早午餐'],
-            '交通出行': ['打油'],
-            '车贷': ['WD6060E'],
-        };
-        let titleToAmount = {
-            'WD6060E': 2175,
-        };
-        let customTextarea = {
-            '打油': 'ODO：\nTrip：\nRon95'
-        }
-        let selectedTag = null; 
-
-        
-        function renderTags() {
-            const tagContainer = document.getElementById("tag-container");
-            tagContainer.innerHTML = "";
-            tags.forEach(tag => {
-                const tagElement = document.createElement("div");
-                tagElement.classList.add("tag");
-                tagElement.textContent = tag;
-                tagElement.onclick = () => selectTag(tag);
-                if (tag === selectedTag) {
-                    tagElement.classList.add("selected");
-                }
-                tagContainer.appendChild(tagElement);
-            });
-        }
-
-        
-        
-        function selectTag(tagName) {
-            selectedTag = tagName;
-            let eleTitle = document.getElementById("content-input");
-            let eleAmount = document.getElementById("content-amount");
-            let eleRemark = document.getElementById("content-remark");
-            if (eleTitle.value.trim() == ''){
-                if(possibleTag.hasOwnProperty(selectedTag)){
-                    if(possibleTag[selectedTag].length == 1){
-                        let autoSuggestedValue = possibleTag[selectedTag][0]
-                        eleTitle.value = autoSuggestedValue;
-                        if (titleToAmount.hasOwnProperty(autoSuggestedValue)){
-                            eleAmount.value = titleToAmount[autoSuggestedValue];
-
-                        }
-                        if (customTextarea.hasOwnProperty(autoSuggestedValue)){
-                            eleRemark.value = customTextarea[autoSuggestedValue];
-                        } 
-                        eleTitle.setAttribute('autoSuggested','autoSuggested');
-                    }
-                }
-            }
-            renderTags();
-            toggleSubmitButton();
-            focusAutofocus();
-        }
-
-        
-        function toggleSubmitButton() {
-            let canSubmit = true;
-            const eleTitle = document.getElementById("content-input");
-            const contentInput = eleTitle.value;
-            
-            if(contentInput.trim() !== ''){
-                document.getElementById("content-input").removeAttribute('autofocus');
-            } else {
-                document.getElementById("content-input").setAttribute('autofocus','');
-                canSubmit = false;
-            }
-            const contentAmount = document.getElementById("content-amount").value;
-            if(contentAmount.trim() == '' || contentAmount.trim() == 'Error' || contentAmount.includes('undefined') || isNaN(contentAmount) || isNaN(parseInt(contentAmount)) || contentAmount == Infinity || parseInt(contentAmount) == 0 || contentAmount.toString().indexOf('0') == 0 ){
-                canSubmit = false;
-            }
-            if(eleTitle.hasAttribute('autoSuggested')){
-                let relevantKey = findTagKey(contentInput);
-                if(selectedTag != relevantKey && relevantKey != null){
-                    selectTag(relevantKey);
-                    document.getElementById('o').innerHTML = 'title auto suggested, in order to change tag, please alter the title.';
-                }
-            } else {
-
-                document.getElementById('o').innerHTML = '';
-            }
-            if (selectedTag == null){
-                canSubmit = false;
-            }
-            const submitButton = document.getElementById("button-submit");
-            if (canSubmit){
-                submitButton.classList.remove("disabled");
-            } else {
-                submitButton.classList.add("disabled");
-            }
-        }
-        function focusRemarkTextarea(event){          
-            const eleTitle = document.getElementById("content-input");
-            const eleRemark = document.getElementById("content-remark");
-            
-            // 检查是否按下了 Return 键（keyCode为13），且不是最后一个输入框
-            if (event.keyCode === 13) {
-                // 阻止默认行为（防止换行）
-                event.preventDefault();
-                // 将焦点移动到下一个输入框
-                eleRemark.focus();
-            }
-            eleTitle.removeAttribute('autoSuggested');
-        }
-
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                let gmap_url = `https://maps.google.com/maps?q=${latitude},${longitude}`;
-                // document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
-                document.getElementById("content-location").value = gmap_url;
-                // document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn" onclick="window.open('${gmap_url}','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')">目前所在位置: 透过Maps打开查看</button>`;
-                document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn">已获取目前位置,提交表单时将一同记录。</button>`;
-            });
-        } else {
-            document.getElementById("content-location").value = "Geolocation is not supported by this browser.";
-            document.getElementById("geolocation-href").innerHTML = "Geolocation is not supported by this browser.";
-        }
-        
-        function submitData() {
-            const title = document.getElementById("content-input").value;
-            const amount = document.getElementById("content-amount").value;
-            const remark = document.getElementById("content-remark").value;
-            const location = document.getElementById("content-location").value;
-            const separator = '|'
-            if(title.trim() == ''){
-                document.getElementById("content-input").focus();
-                return;
-            }
-            if(amount.trim() == '' || amount.trim() == 'Error' || amount.includes('undefined') || isNaN(amount) || isNaN(parseInt(amount)) || amount == Infinity || parseInt(amount) == 0 || amount.toString().indexOf('0') == 0 ){
-                document.getElementById("keypad").focus();
-                return;
-            }
-            
-            // const contentInput = document.getElementById("content-input").value;
-            // const [title, amount] = contentInput.split(" ");
-            let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+location;
-            const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
-            // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
-            window.location.href = shortcutUrl;
-            document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
-            document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
-            document.getElementById("content-input").value = '';
-            document.getElementById("content-amount").value = 0;
-            document.getElementById("content-remark").value = '';
-            selectedTag = null;
-            selectTag('');
-
-        }
-        function cleanPageAndLeave() {
-            var myWindow = window.open("", "_self");
-            myWindow.document.write("");
-            setTimeout (function() {myWindow.close();},1000);
-        }
-
-        async function fetchDataAndExtractTags() {
-            const submitButton = document.getElementById("button-submit");
-            submitButton.classList.add("disabled");
-            renderTags();
-            // Usage example
-            var myElement = document.getElementById('content-input');
-            var modalFadeInDuration = 300;
-            // focusAndOpenKeyboard(myElement, modalFadeInDuration); // or without the second argument
-            // setTimeout(()=>{
-            //     document.getElementById("content-input").focus();
-            // },500);
-        }
-        
-        
-        function findTagKey(inputText) {
-            for (let tag in possibleTag) {
-                // 检查输入文本是否包含当前标签的任何词汇
-                if (possibleTag[tag].some(keyword => inputText.includes(keyword))) {
-                    return tag;
-                }
-            }
-            // 如果没有找到匹配的标签，返回空字符串
-            return null;
-        }
-
-        document.getElementById('content-amount').addEventListener('click',function(){
-            const inputField = document.getElementById('content-amount');
-            if(inputField.value.toString().trim() == ''){
-                document.getElementById('o').innerHTML = '尚未输入任何金额啊！';
-                setTimeout(()=>{
-                    document.getElementById('o').innerHTML = '';
-                },1000);
-            } else {
-                inputField.value = inputField.value.toString().slice(0,-1); 
-            }
-            toggleSubmitButton();
-        });
-
-        document.querySelectorAll('.calc-key').forEach(button => {
-            button.addEventListener('click', function() {
-                
-                const inputField = document.getElementById('content-amount');
-                if (this.textContent === 'C') {
-                    inputField.value = '';
-                } else if (this.textContent === '=') {
-                    try {
-                        inputField.value = eval(inputField.value);
-                        focusAutofocus();
-                    } catch (e) {
-                        inputField.value = 'Error';
-                    }
-                } else {
-                    inputField.value += this.textContent;
-                }
-                toggleSubmitButton();
-            });
-        });
-        document.getElementById('content-amount').addEventListener('change', function() {
-            console.log('amount changed');
-            
-        });
-
-        window.onload = fetchDataAndExtractTags;
-        function focusAutofocus(){
-            let autofocusedInput = Array.prototype.slice.call(
-                    document.querySelectorAll('input')
-                ).filter((el) => el.hasAttribute('autofocus'))[0]
-            if(autofocusedInput !== undefined){
-                focus(autofocusedInput);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', focusAutofocus);
-        document.body.ontouchstart = focusAutofocus;
-        document.ontouchstart = focusAutofocus;
-        document.getElementById("content-input").addEventListener("keydown", focusRemarkTextarea);
-        document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
-    </script>
 </body>
+<script>
+    /* https://medium.com/@brunn/autofocus-in-ios-safari-458215514a5f */
+    const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i);
+    const hasInteracted = (() => {
+        let interacted = false;
+        const onTouchStart = ()=>{
+            interacted = true
+            document.removeEventListener('touchstart',onTouchStart)
+        }
+        document.addEventListener('touchstart', onTouchStart);
+        return () => interacted
+    })()
+    const FOCUS_TYPES = {
+        REAL: 'real',
+        FAKE: 'fake'
+    }
+    const getFocusType = () => (hasInteracted() || !isIos())
+        ? FOCUS_TYPES.REAL
+        : FOCUS_TYPES.FAKE
+    const focus = (input) => {
+        switch (getFocusType()) {
+            case FOCUS_TYPES.REAL:
+                return input.focus();
+            case FOCUS_TYPES.FAKE:
+                input.classList.add('has-focus')
+                const onBlur = (input) => {
+                    console.log(input);
+                    if(input.hasOwnProperty('classList')){
+                        console.log(input.classList);
+                        if(input.classList.includes('has-focus')){
+                            input.classList.remove('has-focus')
+                        }
+                    }
+                    document.removeEventListener(input,onBlur)
+                }
+                input.addEventListener('blur', onBlur)
+                input.scrollIntoView();
+        }
+    }
+    
+    let tags = ['餐饮美食','日常购物','医疗保健','交通出行','休闲娱乐','服饰美容','旅游放松','水电网','人情往来','家居硬体','房贷房租物管','车贷','宠物','其他']; 
+    let possibleTag = {
+        '餐饮美食': ['dinner','吃饭','晚餐','brunch','breakfast','lunch','午餐','早午餐'],
+        '交通出行': ['打油'],
+        '车贷': ['WD6060E'],
+    };
+    let titleToAmount = {
+        'WD6060E': 2175,
+    };
+    let customTextarea = {
+        '打油': 'ODO：\nTrip：\nRon95'
+    }
+    let selectedTag = null; 
+
+    
+    function renderTags() {
+        const tagContainer = document.getElementById("tag-container");
+        tagContainer.innerHTML = "";
+        tags.forEach(tag => {
+            const tagElement = document.createElement("div");
+            tagElement.classList.add("tag");
+            tagElement.textContent = tag;
+            tagElement.onclick = () => selectTag(tag);
+            if (tag === selectedTag) {
+                tagElement.classList.add("selected");
+            }
+            tagContainer.appendChild(tagElement);
+        });
+    }
+
+    
+    
+    function selectTag(tagName) {
+        selectedTag = tagName;
+        let eleTitle = document.getElementById("content-input");
+        let eleAmount = document.getElementById("content-amount");
+        let eleRemark = document.getElementById("content-remark");
+        if (eleTitle.value.trim() == ''){
+            if(possibleTag.hasOwnProperty(selectedTag)){
+                if(possibleTag[selectedTag].length == 1){
+                    let autoSuggestedValue = possibleTag[selectedTag][0]
+                    eleTitle.value = autoSuggestedValue;
+                    if (titleToAmount.hasOwnProperty(autoSuggestedValue)){
+                        eleAmount.value = titleToAmount[autoSuggestedValue];
+
+                    }
+                    if (customTextarea.hasOwnProperty(autoSuggestedValue)){
+                        eleRemark.value = customTextarea[autoSuggestedValue];
+                    } 
+                    eleTitle.setAttribute('autoSuggested','autoSuggested');
+                }
+            }
+        }
+        renderTags();
+        toggleSubmitButton();
+        focusAutofocus();
+    }
+
+    
+    function toggleSubmitButton() {
+        let canSubmit = true;
+        const eleTitle = document.getElementById("content-input");
+        const contentInput = eleTitle.value;
+        
+        if(contentInput.trim() !== ''){
+            document.getElementById("content-input").removeAttribute('autofocus');
+        } else {
+            document.getElementById("content-input").setAttribute('autofocus','');
+            canSubmit = false;
+        }
+        const contentAmount = document.getElementById("content-amount").value;
+        if(contentAmount.trim() == '' || contentAmount.trim() == 'Error' || contentAmount.includes('undefined') || isNaN(contentAmount) || isNaN(parseInt(contentAmount)) || contentAmount == Infinity || parseInt(contentAmount) == 0 || contentAmount.toString().indexOf('0') == 0 ){
+            canSubmit = false;
+        }
+        if(eleTitle.hasAttribute('autoSuggested')){
+            let relevantKey = findTagKey(contentInput);
+            if(selectedTag != relevantKey && relevantKey != null){
+                selectTag(relevantKey);
+                document.getElementById('o').innerHTML = 'title auto suggested, in order to change tag, please alter the title.';
+            }
+        } else {
+
+            document.getElementById('o').innerHTML = '';
+        }
+        if (selectedTag == null){
+            canSubmit = false;
+        }
+        const submitButton = document.getElementById("button-submit");
+        if (canSubmit){
+            submitButton.classList.remove("disabled");
+        } else {
+            submitButton.classList.add("disabled");
+        }
+    }
+    function focusRemarkTextarea(event){          
+        const eleTitle = document.getElementById("content-input");
+        const eleRemark = document.getElementById("content-remark");
+        
+        // 检查是否按下了 Return 键（keyCode为13），且不是最后一个输入框
+        if (event.keyCode === 13) {
+            // 阻止默认行为（防止换行）
+            event.preventDefault();
+            // 将焦点移动到下一个输入框
+            eleRemark.focus();
+        }
+        eleTitle.removeAttribute('autoSuggested');
+    }
+
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            let gmap_url = `https://maps.google.com/maps?q=${latitude},${longitude}`;
+            // document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
+            document.getElementById("content-location").value = gmap_url;
+            // document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn" onclick="window.open('${gmap_url}','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')">目前所在位置: 透过Maps打开查看</button>`;
+            document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn">已获取目前位置,提交表单时将一同记录。</button>`;
+        });
+    } else {
+        document.getElementById("content-location").value = "Geolocation is not supported by this browser.";
+        document.getElementById("geolocation-href").innerHTML = "Geolocation is not supported by this browser.";
+    }
+    
+    function submitData() {
+        const title = document.getElementById("content-input").value;
+        const amount = document.getElementById("content-amount").value;
+        const remark = document.getElementById("content-remark").value;
+        const location = document.getElementById("content-location").value;
+        const separator = '|'
+        if(title.trim() == ''){
+            document.getElementById("content-input").focus();
+            return;
+        }
+        if(amount.trim() == '' || amount.trim() == 'Error' || amount.includes('undefined') || isNaN(amount) || isNaN(parseInt(amount)) || amount == Infinity || parseInt(amount) == 0 || amount.toString().indexOf('0') == 0 ){
+            document.getElementById("keypad").focus();
+            return;
+        }
+        
+        // const contentInput = document.getElementById("content-input").value;
+        // const [title, amount] = contentInput.split(" ");
+        let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+location;
+        const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
+        // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
+        window.location.href = shortcutUrl;
+        document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
+        document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
+        document.getElementById("content-input").value = '';
+        document.getElementById("content-amount").value = 0;
+        document.getElementById("content-remark").value = '';
+        selectedTag = null;
+        selectTag('');
+
+    }
+    function cleanPageAndLeave() {
+        var myWindow = window.open("", "_self");
+        myWindow.document.write("");
+        setTimeout (function() {myWindow.close();},1000);
+    }
+
+    async function fetchDataAndExtractTags() {
+        const submitButton = document.getElementById("button-submit");
+        submitButton.classList.add("disabled");
+        renderTags();
+        // Usage example
+        var myElement = document.getElementById('content-input');
+        var modalFadeInDuration = 300;
+        // focusAndOpenKeyboard(myElement, modalFadeInDuration); // or without the second argument
+        // setTimeout(()=>{
+        //     document.getElementById("content-input").focus();
+        // },500);
+    }
+    
+    
+    function findTagKey(inputText) {
+        for (let tag in possibleTag) {
+            // 检查输入文本是否包含当前标签的任何词汇
+            if (possibleTag[tag].some(keyword => inputText.includes(keyword))) {
+                return tag;
+            }
+        }
+        // 如果没有找到匹配的标签，返回空字符串
+        return null;
+    }
+
+    document.getElementById('content-amount').addEventListener('click',function(){
+        const inputField = document.getElementById('content-amount');
+        if(inputField.value.toString().trim() == ''){
+            document.getElementById('o').innerHTML = '尚未输入任何金额啊！';
+            setTimeout(()=>{
+                document.getElementById('o').innerHTML = '';
+            },1000);
+        } else {
+            inputField.value = inputField.value.toString().slice(0,-1); 
+        }
+        toggleSubmitButton();
+    });
+
+    document.querySelectorAll('.calc-key').forEach(button => {
+        button.addEventListener('click', function() {
+            
+            const inputField = document.getElementById('content-amount');
+            if (this.textContent === 'C') {
+                inputField.value = '';
+            } else if (this.textContent === '=') {
+                try {
+                    inputField.value = eval(inputField.value);
+                    focusAutofocus();
+                } catch (e) {
+                    inputField.value = 'Error';
+                }
+            } else {
+                inputField.value += this.textContent;
+            }
+            toggleSubmitButton();
+        });
+    });
+    document.getElementById('content-amount').addEventListener('change', function() {
+        console.log('amount changed');
+        
+    });
+
+    window.onload = fetchDataAndExtractTags;
+    function focusAutofocus(){
+        let autofocusedInput = Array.prototype.slice.call(
+                document.querySelectorAll('input')
+            ).filter((el) => el.hasAttribute('autofocus'))[0]
+        if(autofocusedInput !== undefined){
+            focus(autofocusedInput);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', focusAutofocus);
+    document.body.ontouchstart = focusAutofocus;
+    document.ontouchstart = focusAutofocus;
+    document.getElementById("content-input").addEventListener("keydown", focusRemarkTextarea);
+    document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
+</script>
 </html>
