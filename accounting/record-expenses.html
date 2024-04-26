@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Record Expenses</title>
+    <title>444</title>
     <style>
         .tag {
             display: inline-block;
@@ -20,13 +20,13 @@
     </style>
 </head>
 <body>
-    <label for="content-input">明目</label>
-    <input type="text" id="content-input" placeholder="明目 金额, 例如[吃饭 12.1]">
+    <label for="content-input">内容:</label>
+    <input type="text" id="content-input" placeholder="请输入内容">
     <br><br>
     <div id="tag-container">
     </div>
     <br>
-    <button id="submit-btn" class="submit-btn disabled" onclick="submitData()">记录到Notion</button>
+    <button id="submit-btn" class="submit-btn disabled" onclick="submitData()">提交</button>
 <p id="o"></p>
     <script>
         let tags = ['餐饮美食','日常购物','医疗保健','交通出行','休闲娱乐','服饰美容','旅游放松','水电网','人情往来','家居硬体','房贷房租物管','车贷','宠物','其他']; 
@@ -59,7 +59,7 @@
         function toggleSubmitButton() {
             const contentInput = document.getElementById("content-input").value;
             const submitButton = document.getElementById("submit-btn");
-            if (contentInput.trim() !==  && selectedTag !== null){
+            if (contentInput.trim() !== '' && selectedTag !== null){
                 submitButton.classList.remove("disabled");
             } else {
                 submitButton.classList.add("disabled");
