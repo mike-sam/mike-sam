@@ -19,7 +19,7 @@
         }
         #calculator {
             display: grid;
-            place-items: baseline;
+            place-items: center;
             margin-top: 10px;
         }
         #keypad {
@@ -32,25 +32,38 @@
             font-size: 20px;
             cursor: pointer;
         }
+        button.calc-key{
+            border-radius: 0px;
+            border: 0px;
+        }
+      
         #content-input, #content-amount, #content-remark {
-            font-size: 20px;
-            padding: 10px;
+            font-size: 14px;
+            padding: 5px;
             margin-bottom: 10px;
             width: 200px;
+            /* max-width: 50vw; */
+        }
+        #content-input {
+            width: calc(100% - 20px);
         }
         #content-amount {
             text-align: right;
         }
         #content-remark {
+            margin-top: 10px;
             width: 300px;
-            height: 350px;
-            resize: none;
+            height: 100px;
+            /* resize: none; */
         }
-        
+        #tag-container {
+            width: 100%;
+            /* max-width: 50vw; */
+        }
         #container {
             display: flex;
             justify-content: space-around;
-            padding-top: 50px;
+            padding-top: 10px;
             flex-wrap: wrap;
         }
 
@@ -60,13 +73,14 @@
     </style>
 </head>
 <body>
-    <b style="color:#ccc;">v3.2.0</b>
+    <b style="color:#ccc;">v3.2.1</b>
     
     <div id="container">
         <div id="container-left">
             <!--<label for="content-input">明目:</label>-->
             <input type="text" id="content-input" placeholder="例如：[吃饭]">
-            <br>
+            <div id="tag-container">
+            </div>
             <!--<label for="content-amount">金额:</label>-->
             <div id="calculator">
                 <input type="text" id="content-amount" placeholder="输入金额" readonly>
@@ -95,8 +109,7 @@
         </div>
 
         <div id="container-bottom">
-            <div id="tag-container">
-            </div>
+            
             <input type="text" id="content-location">
         </div>
     </div>
@@ -127,7 +140,8 @@
             navigator.geolocation.getCurrentPosition(function(position) {
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
-                document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                // document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                document.getElementById("content-location").value = `https://maps.google.com/maps?q=${latitude},${longitude}`;
             });
         } else {
             document.getElementById("content-location").value = "Geolocation is not supported by this browser.";
@@ -154,9 +168,12 @@
         function submitData() {
             const title = document.getElementById("content-input").value;
             const amount = document.getElementById("content-amount").value;
+            const remark = document.getElementById("content-remark").value;
+            const location = document.getElementById("content-location").value;
+            const separator = '|'
             // const contentInput = document.getElementById("content-input").value;
             // const [title, amount] = contentInput.split(" ");
-            let submitted_value = title+' '+amount+' '+selectedTag;
+            let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+location;
             const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
             // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
             window.location.href = shortcutUrl;
@@ -164,6 +181,7 @@
             document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
             document.getElementById("content-input").value = '';
             document.getElementById("content-amount").value = 0;
+            document.getElementById("content-remark").value = '';
             selectedTag = null;
             selectTag('');
 
