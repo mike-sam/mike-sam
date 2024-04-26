@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.1</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.2</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -138,7 +138,7 @@
         <div id="calculator">
             <div id="keypad">
                 <button class="calc-key">C</button>
-                <input type="text" id="content-amount" placeholder="输入金额" readonly>
+                <input type="text" id="content-amount" placeholder="(点此可删末端) 0" readonly>
                 <button class="calc-key">1</button>
                 <button class="calc-key">2</button>
                 <button class="calc-key">3</button>
@@ -391,7 +391,16 @@
             return null;
         }
 
-        
+        document.addEventListener('click',function(){
+            const inputField = document.getElementById('content-amount');
+            inputField.value = inputField.value.toString().slice(0,-1); 
+            document.getElementById('o').innerHTML = '尚未输入任何金额啊！';
+            setTimeout(()=>{
+                document.getElementById('o').innerHTML = '';
+
+            },1000);
+        });
+
         document.querySelectorAll('.calc-key').forEach(button => {
             button.addEventListener('click', function() {
                 
