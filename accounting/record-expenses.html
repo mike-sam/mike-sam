@@ -123,7 +123,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.17</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.18</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -237,7 +237,6 @@
             }
             const contentAmount = document.getElementById("content-amount").value;
             if(trim(contentAmount) == '' || trim(contentAmount) == 'Error' || (isNaN(parseInt(contentAmount)) && parseInt(contentAmount) == 0)){
-            } else {
                 canSubmit = false;
             }
 
@@ -257,7 +256,7 @@
                 submitButton.classList.add("disabled");
             }
         }
-        function toggleNumberInput(event){            
+        function focusRemarkTextarea(event){            
             // 检查是否按下了 Return 键（keyCode为13），且不是最后一个输入框
             if (event.keyCode === 13) {
                 // 阻止默认行为（防止换行）
@@ -409,7 +408,7 @@
         document.addEventListener('DOMContentLoaded', focusAutofocus);
         document.body.ontouchstart = focusAutofocus;
         document.ontouchstart = focusAutofocus;
-        document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
+        document.getElementById("content-input").addEventListener("keydown", focusRemarkTextarea);
         document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
 </body>
