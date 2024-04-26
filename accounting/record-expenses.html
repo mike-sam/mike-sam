@@ -127,7 +127,7 @@
 <body style="display: grid; height: calc(100vh - 50px);">
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.3</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.4</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -219,6 +219,7 @@
     let titleToAmount = {
         'WD6060E': 2175,
     };
+    let prevSuggestedRemark = null;
     let customTextarea = {
         '打油': 'ODO：\nTrip：\nRon95'
     }
@@ -258,8 +259,17 @@
                     }
                     if (customTextarea.hasOwnProperty(autoSuggestedValue)){
                         eleRemark.value = customTextarea[autoSuggestedValue];
-                    } 
+                        prevSuggestedRemark = eleRemark.value;
+                    } else {
+                        if(prevSuggestedRemark != null){
+                            eleRemark.value = '';
+                        }
+                    }
                     eleTitle.setAttribute('autoSuggested','autoSuggested');
+                } else {
+                    if(prevSuggestedRemark != null){
+                        eleRemark.value = '';
+                    }
                 }
             }
         }
