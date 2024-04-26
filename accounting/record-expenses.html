@@ -123,7 +123,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.8</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.9</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -255,11 +255,10 @@
             const submitButton = document.getElementById("button-submit");
             submitButton.classList.add("disabled");
             renderTags();
-            document.getElementById('o').innerHTML = 'loaded';
-            setTimeout(()=>{
-                document.getElementById("content-input").focus();
-                document.getElementById('o').innerHTML = '';
-            },2000);
+            // Usage example
+            var myElement = document.getElementById('content-input');
+            var modalFadeInDuration = 300;
+            focusAndOpenKeyboard(myElement, modalFadeInDuration); // or without the second argument
             // setTimeout(()=>{
             //     document.getElementById("content-input").focus();
             // },500);
@@ -295,6 +294,35 @@
                 document.getElementById("content-remark").focus();
             }
         }
+
+        function focusAndOpenKeyboard(el, timeout) {
+            if(!timeout) {
+                timeout = 100;
+            }
+            if(el) {
+                // Align temp input element approximately where the input element is
+                // so the cursor doesn't jump around
+                var __tempEl__ = document.createElement('input');
+                __tempEl__.style.position = 'absolute';
+                __tempEl__.style.top = (el.offsetTop + 7) + 'px';
+                __tempEl__.style.left = el.offsetLeft + 'px';
+                __tempEl__.style.height = 0;
+                __tempEl__.style.opacity = 0;
+                // Put this temp element as a child of the page <body> and focus on it
+                document.body.appendChild(__tempEl__);
+                __tempEl__.focus();
+
+                // The keyboard is open. Now do a delayed focus on the target element
+                setTimeout(function() {
+                el.focus();
+                el.click();
+                // Remove the temp element
+                document.body.removeChild(__tempEl__);
+                }, timeout);
+            }
+        }
+
+        
         document.querySelectorAll('.calc-key').forEach(button => {
             button.addEventListener('click', function() {
                 const inputField = document.getElementById('content-amount');
