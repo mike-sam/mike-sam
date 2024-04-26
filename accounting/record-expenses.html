@@ -123,7 +123,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.9</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.10</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -314,10 +314,11 @@
 
                 // The keyboard is open. Now do a delayed focus on the target element
                 setTimeout(function() {
-                el.focus();
-                el.click();
-                // Remove the temp element
-                document.body.removeChild(__tempEl__);
+                    el.setAttribute('autofocus','autofocus');
+                    el.focus();
+                    el.click();
+                    // Remove the temp element
+                    document.body.removeChild(__tempEl__);
                 }, timeout);
             }
         }
