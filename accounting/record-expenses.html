@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.22</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.22a</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -249,11 +249,9 @@
                 canSubmit = false;
             }
 
-            if (selectedTag == null){
-                let relevantKey = findTagKey(contentInput);
-                if(selectedTag != relevantKey || relevantKey != null){
-                    selectTag(relevantKey);
-                }
+            let relevantKey = findTagKey(contentInput);
+            if(selectedTag != relevantKey || relevantKey != null){
+                selectTag(relevantKey);
             }
             if (selectedTag == null){
                 canSubmit = false;
