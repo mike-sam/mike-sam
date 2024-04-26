@@ -27,7 +27,8 @@
     </div>
     <br>
     <button id="submit-btn" class="submit-btn disabled" onclick="submitData()">提交</button>
-<p id="o"></p>
+    <p id="o"></p>
+    <p id="record"></p>
     <script>
         let tags = ['餐饮美食','日常购物','医疗保健','交通出行','休闲娱乐','服饰美容','旅游放松','水电网','人情往来','家居硬体','房贷房租物管','车贷','宠物','其他']; 
         let selectedTag = null; 
@@ -70,17 +71,22 @@
         function submitData() {
             const contentInput = document.getElementById("content-input").value;
             const [title, amount] = contentInput.split(" ");
-            const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(title+' '+amount+' '+selectedTag);
+            let submitted_value = title+' '+amount+' '+selectedTag;
+            const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
             // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
             window.location.href = shortcutUrl;
-            leave();
+            document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
+            document.getElementById("content-input").value = '';
+            selectedTag = null;
+            selectTag('');
+            // leave();
 
         }
         function leave() {
-            var myWindow = window.open("", "_self");
-            myWindow.document.write("");
-            setTimeout (function() {myWindow.close();},1000);
+            // var myWindow = window.open("", "_self");
+            // myWindow.document.write("");
+            // setTimeout (function() {myWindow.close();},1000);
         }
 
         async function fetchDataAndExtractTags() {
