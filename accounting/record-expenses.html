@@ -125,7 +125,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.2a</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.2b</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -401,6 +401,7 @@
             } else {
                 inputField.value = inputField.value.toString().slice(0,-1); 
             }
+            toggleSubmitButton();
         });
 
         document.querySelectorAll('.calc-key').forEach(button => {
