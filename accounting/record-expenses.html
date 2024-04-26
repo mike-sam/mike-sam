@@ -3,34 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Records Expenses</title>
+    <title>Records Expenses - integrated with iOS Shortcuts</title>
     <style>
+        body {
+            -webkit-overflow-scrolling: touch;
+        }
         .tag {
             display: inline-block;
             padding: 5px 10px;
             margin: 5px;
-            background-color: #e0e0e0;
+            background-color: #bfe2ff;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
         }
         .tag.selected {
-            background-color: #ff4081;
+            background-color: #40a3ff;
             color: white;
         }
         #calculator {
             display: grid;
             place-items: center;
-            margin-top: 10px;
+            grid-auto-flow: row;
+            grid-auto-columns: 1fr;
         }
         #keypad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 8px;
+        }
+        #keypad > input {
+            grid-column: span 4;
         }
         .calc-key {
-            padding: 15px;
-            font-size: 20px;
+            padding: 10px;
+            font-size: 14px;
             cursor: pointer;
+            background-color: #bfe2ff;
         }
         button.calc-key{
             border-radius: 0px;
@@ -40,7 +49,6 @@
         #content-input, #content-amount, #content-remark {
             font-size: 14px;
             padding: 5px;
-            margin-bottom: 10px;
             width: 200px;
             /* max-width: 50vw; */
         }
@@ -50,70 +58,101 @@
         #content-amount {
             text-align: right;
         }
+        #content-amount, #content-remark {
+            max-width: 50vw;
+        }
         #content-remark {
-            margin-top: 10px;
-            width: 300px;
-            height: 100px;
+            width: 100%;
             /* resize: none; */
         }
         #tag-container {
             width: 100%;
             /* max-width: 50vw; */
         }
-        #container {
+        .row {
             display: flex;
             justify-content: space-around;
-            padding-top: 10px;
+        }
+        .p-10 {
+            padding-top: 10px!important;
+        }
+        .m-10 {
+            margin-top: 10px!important;
+        }
+        .row-wrap {
             flex-wrap: wrap;
+        }
+        .row-no-wrap {
+            flex-wrap: nowrap;
+        }
+        input,textarea {
+            background-color: #eff8ff;
+            border: #ccc;
         }
 
         #container-bottom {
             flex-basis: 100%;
         }
+        .w-100 {
+            width: 100%!important;
+        }
+        .btn {
+            padding: 5px;
+            margin: 5px;
+            border: 0px;
+            border-radius: 5px;
+        }
+        .btn:hover{
+            background-color: #6940ff;
+            color: white;
+        }
+        .btn-map {
+            background-color: rgb(217, 255, 209);
+        }
+        .btn-submit {
+            background-color: #e4ddff;
+        }
     </style>
 </head>
 <body>
-    <b style="color:#ccc;">v3.2.1</b>
+    <span>Expenses record tools  - integrated with iOS Shortcuts - <b style="color:#ccc;">v3.2.2</b></span>
     
-    <div id="container">
-        <div id="container-left">
-            <!--<label for="content-input">明目:</label>-->
-            <input type="text" id="content-input" placeholder="例如：[吃饭]">
-            <div id="tag-container">
-            </div>
-            <!--<label for="content-amount">金额:</label>-->
-            <div id="calculator">
-                <input type="text" id="content-amount" placeholder="输入金额" readonly>
-                <div id="keypad">
-                    <button class="calc-key">1</button>
-                    <button class="calc-key">2</button>
-                    <button class="calc-key">3</button>
-                    <button class="calc-key">+</button>
-                    <button class="calc-key">4</button>
-                    <button class="calc-key">5</button>
-                    <button class="calc-key">6</button>
-                    <button class="calc-key">-</button>
-                    <button class="calc-key">7</button>
-                    <button class="calc-key">8</button>
-                    <button class="calc-key">9</button>
-                    <button class="calc-key">*</button>
-                    <button class="calc-key">0</button>
-                    <button class="calc-key">/</button>
-                    <button class="calc-key">C</button>
-                    <button class="calc-key">=</button>
-                </div>
-            </div>
+    <div class="row row-wrap">
+        <!--<label for="content-input">明目:</label>-->
+        <input type="text" id="content-input" placeholder="例如：[吃饭]">
+        <div id="tag-container">
         </div>
-        <div id="container-right">
-            <textarea id="content-remark"></textarea>
-        </div>
-
-        <div id="container-bottom">
-            
-            <input type="text" id="content-location">
-        </div>
+        <!--<label for="content-amount">金额:</label>-->
     </div>
-    <button id="submit-btn" class="submit-btn disabled" onclick="submitData()">提交</button>
+    <div class="row row-no-wrap">
+        <div id="calculator">
+            <div id="keypad">
+                <input type="text" id="content-amount" placeholder="输入金额" readonly>
+                <button class="calc-key">1</button>
+                <button class="calc-key">2</button>
+                <button class="calc-key">3</button>
+                <button class="calc-key">+</button>
+                <button class="calc-key">4</button>
+                <button class="calc-key">5</button>
+                <button class="calc-key">6</button>
+                <button class="calc-key">-</button>
+                <button class="calc-key">7</button>
+                <button class="calc-key">8</button>
+                <button class="calc-key">9</button>
+                <button class="calc-key">*</button>
+                <button class="calc-key">0</button>
+                <button class="calc-key">/</button>
+                <button class="calc-key">C</button>
+                <button class="calc-key">=</button>
+            </div>
+        </div>
+        <textarea id="content-remark" placeholder="关于此笔消费的详细内容"></textarea>
+    </div>
+    <button id="button-submit" class="btn-submit btn disabled w-100 m-10" onclick="submitData()">提交</button>
+    <div class="row row-wrap w-100">
+        <span id="geolocation-href" class="w-100"></span>
+        <input type="hidden" id="content-location" readonly>
+    </div>
     <p id="o"></p>
     <p id="record"></p>
     <script>
@@ -140,8 +179,10 @@
             navigator.geolocation.getCurrentPosition(function(position) {
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
+                let gmap_url = `https://maps.google.com/maps?q=${latitude},${longitude}`;
                 // document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
-                document.getElementById("content-location").value = `https://maps.google.com/maps?q=${latitude},${longitude}`;
+                document.getElementById("content-location").value = gmap_url;
+                document.getElementById("geolocation-href").innerHTML = `<button class="w-100 btn-map btn" onclick="window.open('${gmap_url}','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')">目前所在位置: 透过Maps打开查看</button>`;
             });
         } else {
             document.getElementById("content-location").value = "Geolocation is not supported by this browser.";
@@ -156,7 +197,7 @@
         
         function toggleSubmitButton() {
             const contentInput = document.getElementById("content-input").value;
-            const submitButton = document.getElementById("submit-btn");
+            const submitButton = document.getElementById("button-submit");
             if (contentInput.trim() !== '' && selectedTag !== null){
                 submitButton.classList.remove("disabled");
             } else {
@@ -193,9 +234,10 @@
         }
 
         async function fetchDataAndExtractTags() {
-            const submitButton = document.getElementById("submit-btn");
+            const submitButton = document.getElementById("button-submit");
             submitButton.classList.add("disabled");
             renderTags();
+            document.getElementById("content-input").focus();
         }
         
         let possibleTag = {
