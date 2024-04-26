@@ -123,7 +123,7 @@
     </style>
 </head>
 <body>
-    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.14</b></span>
+    <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.2.15</b></span>
     
     <div class="row row-wrap m-10 p-10">
         <!--<label for="content-input">明目:</label>-->
@@ -394,6 +394,7 @@
         }
         document.addEventListener('DOMContentLoaded', focusAutofocus);
         document.body.ontouchstart = focusAutofocus;
+        document.ontouchstart = focusAutofocus;
         document.getElementById("content-input").addEventListener("keydown", toggleNumberInput);
         document.getElementById("content-input").addEventListener("input", toggleSubmitButton);
     </script>
