@@ -17,20 +17,89 @@
             background-color: #ff4081;
             color: white;
         }
+        #calculator {
+            display: grid;
+            place-items: baseline;
+            margin-top: 10px;
+        }
+        #keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .calc-key {
+            padding: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        #content-input, #content-amount, #content-remark {
+            font-size: 20px;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 200px;
+        }
+        #content-amount {
+            text-align: right;
+        }
+        #content-remark {
+            width: 300px;
+            height: 350px;
+            resize: none;
+        }
+        
+        #container {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        #container-bottom {
+            flex-basis: 100%;
+        }
     </style>
 </head>
 <body>
-    <b style="color:#ccc;">v3.1.2</b>
-    <br><br>
-    <label for="content-input">明目:</label>
-    <input type="text" id="content-input" placeholder="明目 例如：[吃饭]">
-    <br>
-    <label for="content-number">金额:</label>
-	<input type="number" id="content-number" placeholder="金额，例如：[12]">
-    <br><br>
-    <div id="tag-container">
+    <b style="color:#ccc;">v3.2.0</b>
+    
+    <div id="container">
+        <div id="container-left">
+            <!--<label for="content-input">明目:</label>-->
+            <input type="text" id="content-input" placeholder="例如：[吃饭]">
+            <br>
+            <!--<label for="content-amount">金额:</label>-->
+            <div id="calculator">
+                <input type="text" id="content-amount" placeholder="输入金额" readonly>
+                <div id="keypad">
+                    <button class="calc-key">1</button>
+                    <button class="calc-key">2</button>
+                    <button class="calc-key">3</button>
+                    <button class="calc-key">+</button>
+                    <button class="calc-key">4</button>
+                    <button class="calc-key">5</button>
+                    <button class="calc-key">6</button>
+                    <button class="calc-key">-</button>
+                    <button class="calc-key">7</button>
+                    <button class="calc-key">8</button>
+                    <button class="calc-key">9</button>
+                    <button class="calc-key">*</button>
+                    <button class="calc-key">0</button>
+                    <button class="calc-key">/</button>
+                    <button class="calc-key">C</button>
+                    <button class="calc-key">=</button>
+                </div>
+            </div>
+        </div>
+        <div id="container-right">
+            <textarea id="content-remark"></textarea>
+        </div>
+
+        <div id="container-bottom">
+            <div id="tag-container">
+            </div>
+            <input type="text" id="content-location">
+        </div>
     </div>
-    <br>
     <button id="submit-btn" class="submit-btn disabled" onclick="submitData()">提交</button>
     <p id="o"></p>
     <p id="record"></p>
@@ -54,6 +123,15 @@
             });
         }
 
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                document.getElementById("content-location").value = `Latitude: ${latitude}, Longitude: ${longitude}`;
+            });
+        } else {
+            document.getElementById("content-location").value = "Geolocation is not supported by this browser.";
+        }
         
         function selectTag(tagName) {
             selectedTag = tagName;
@@ -75,7 +153,7 @@
         
         function submitData() {
             const title = document.getElementById("content-input").value;
-            const amount = document.getElementById("content-number").value;
+            const amount = document.getElementById("content-amount").value;
             // const contentInput = document.getElementById("content-input").value;
             // const [title, amount] = contentInput.split(" ");
             let submitted_value = title+' '+amount+' '+selectedTag;
@@ -85,7 +163,7 @@
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
             document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
             document.getElementById("content-input").value = '';
-            document.getElementById("content-number").value = 0;
+            document.getElementById("content-amount").value = 0;
             selectedTag = null;
             selectTag('');
 
@@ -129,12 +207,25 @@
                 // 阻止默认行为（防止换行）
                 event.preventDefault();
                 // 将焦点移动到下一个输入框
-                document.getElementById("content-number").focus();
+                document.getElementById("content-amount").focus();
             }
-            
-
-
         }
+        document.querySelectorAll('.calc-key').forEach(button => {
+            button.addEventListener('click', function() {
+                const inputField = document.getElementById('content-amount');
+                if (this.textContent === 'C') {
+                    inputField.value = '';
+                } else if (this.textContent === '=') {
+                    try {
+                        inputField.value = eval(inputField.value);
+                    } catch (e) {
+                        inputField.value = 'Error';
+                    }
+                } else {
+                    inputField.value += this.textContent;
+                }
+            });
+        });
 
         window.onload = fetchDataAndExtractTags;
 
