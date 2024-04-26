@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>444</title>
+    <title>Record Expenses</title>
     <style>
         .tag {
             display: inline-block;
@@ -26,7 +26,7 @@
     <div id="tag-container">
     </div>
     <br>
-    <button id="submit-btn" class="submit-btn disabled" onclick="submitData()">提交</button>
+    <button id="submit-btn" class="submit-btn disabled" onclick="submitData()">记录到Notion</button>
 <p id="o"></p>
     <script>
         let tags = ['餐饮美食','日常购物','医疗保健','交通出行','休闲娱乐','服饰美容','旅游放松','水电网','人情往来','家居硬体','房贷房租物管','车贷','宠物','其他']; 
@@ -59,7 +59,7 @@
         function toggleSubmitButton() {
             const contentInput = document.getElementById("content-input").value;
             const submitButton = document.getElementById("submit-btn");
-            if (contentInput.trim() !== " && selectedTag !== null) {
+            if (contentInput.trim() !==  && selectedTag !== null){
                 submitButton.classList.remove("disabled");
             } else {
                 submitButton.classList.add("disabled");
@@ -74,18 +74,11 @@
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
             // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
             window.location.href = shortcutUrl;
+            setTimeout(()=>{
+                window.close();
+            },500)
 
         }
-
-        var sendObjectMessage = function(parameters) {
-            var iframe = document.createElement(iframe);
-            iframe.setAttribute(src, "shortcuts://run-shortcut?name=QQ&input=text&text="+parameters);
-            document.documentElement.appendChild(iframe);
-            iframe.parentNode.removeChild(iframe);
-            iframe = null;
-         }
-
-         sendObjectMessage("send-something");
 
         async function fetchDataAndExtractTags() {
             renderTags();
