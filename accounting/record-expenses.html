@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <b style="color:#ccc;">v3.1</b>
+    <b style="color:#ccc;">v3.1.1</b>
     <br><br>
     <label for="content-input">明目:</label>
     <input type="text" id="content-input" placeholder="明目 例如：[吃饭]">
@@ -82,16 +82,12 @@
             const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
             document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
             document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
-            setTimeout(()=>{
-
-                // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
-                window.location.href = shortcutUrl;
-                document.getElementById("content-input").value = '';
-                document.getElementById("content-number").value = 0;
-                selectedTag = null;
-                selectTag('');
-                // cleanPageAndLeave();
-            },500);
+            // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
+            window.location.href = shortcutUrl;
+            document.getElementById("content-input").value = '';
+            document.getElementById("content-number").value = 0;
+            selectedTag = null;
+            selectTag('');
 
         }
         function cleanPageAndLeave() {
