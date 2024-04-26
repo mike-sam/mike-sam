@@ -20,6 +20,7 @@
     </style>
 </head>
 <body>
+    <b style="color:#ccc;">v2</b>
     <label for="content-input">明目:</label>
     <input type="text" id="content-input" placeholder="明目 金额，需要空格，例如：[吃饭 12]">
     <br><br>
@@ -80,13 +81,13 @@
             document.getElementById("content-input").value = '';
             selectedTag = null;
             selectTag('');
-            // leave();
+            // cleanPageAndLeave();
 
         }
-        function leave() {
-            // var myWindow = window.open("", "_self");
-            // myWindow.document.write("");
-            // setTimeout (function() {myWindow.close();},1000);
+        function cleanPageAndLeave() {
+            var myWindow = window.open("", "_self");
+            myWindow.document.write("");
+            setTimeout (function() {myWindow.close();},1000);
         }
 
         async function fetchDataAndExtractTags() {
