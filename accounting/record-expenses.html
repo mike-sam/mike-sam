@@ -6,12 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Records Expenses - integrated with iOS Shortcuts</title>
     <style>
-        @media screen and (min-width: 1400px) {
-            body {
-                max-width: 600px;
-                margin: 0 auto;
-            }
-        }
         @media screen and (min-width: 300px) {
             body {
                 margin: 0 15px;
@@ -20,10 +14,16 @@
                 padding: 6px 12px;
             }
         }
+        @media screen and (min-width: 900px) {
+            body {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+        
         body {
             -webkit-overflow-scrolling: touch;
             touch-action: manipulation;
-            
             display: grid;
             height: calc(100vh - 50px);
         }
