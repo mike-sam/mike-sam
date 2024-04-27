@@ -9,6 +9,10 @@
         body {
             -webkit-overflow-scrolling: touch;
             touch-action: manipulation;
+            max-width: 600px;
+            margin: 0 auto;
+            display: grid;
+            height: calc(100vh - 50px);
         }
         .tag {
             display: inline-block;
@@ -124,10 +128,10 @@
         }
     </style>
 </head>
-<body style="display: grid; height: calc(100vh - 50px);">
+<body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.4b</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.5</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -362,7 +366,6 @@
         const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
         // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
         window.location.href = shortcutUrl;
-        return;
         document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
         document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
         document.getElementById("content-input").value = '';
