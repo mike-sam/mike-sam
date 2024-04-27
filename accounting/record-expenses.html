@@ -5,6 +5,7 @@
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Records Expenses - integrated with iOS Shortcuts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         @media screen and (min-width: 300px) {
             body {
@@ -35,6 +36,8 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 15px;
+            min-width: 30px;
+            text-align: center;
         }
         .tag.selected {
             background-color: #40a3ff;
@@ -57,6 +60,15 @@
         #keypad > input {
             grid-column: span 3;
         }
+
+        .grid {
+            display: grid;
+            width: 100%;
+        }
+        .grid-2 {
+            grid-template-rows: 1fr;
+            grid-template-columns: calc(100% - 80px) 80px;
+        }
         .calc-key {
             padding: 10px;
             font-size: 14px;
@@ -68,6 +80,12 @@
             border: 0px;
         }
       
+        #empty-input {
+            border-radius: 5px;
+            background-color: rgb(55, 58, 235);
+            color: white;
+            border: 0px;
+        }
         #content-input, #content-amount, #content-remark {
             font-size: 14px;
             padding: 5px;
@@ -75,7 +93,8 @@
             /* max-width: 50vw; */
         }
         #content-input {
-            width: 100%;
+            margin-right: 5px;
+            /* width: 80%; */
         }
         #content-amount {
             text-align: right;
@@ -144,11 +163,14 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.6</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.7</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
-            <input type="text" id="content-input" autofocus placeholder="e.g.: 吃饭">
+            <div class="grid grid-2">
+                <input type="text" id="content-input" autofocus placeholder="e.g.: 吃饭">
+                <button id="empty-input"><i class="fa fa-eraser" style="margin-right:5px;"></i>&nbsp;清空</button>
+            </div>
             <div id="tag-container">
             </div>
             <!--<label for="content-amount">金额:</label>-->
@@ -419,6 +441,10 @@
         return null;
     }
 
+    document.getElementById('empty-input').addEventListener('click',function(){
+        document.getElementById('content-input').value = '';
+        toggleSubmitButton();
+    });
     document.getElementById('content-amount').addEventListener('click',function(){
         const inputField = document.getElementById('content-amount');
         if(inputField.value.toString().trim() == ''){
