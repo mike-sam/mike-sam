@@ -6,11 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Records Expenses - integrated with iOS Shortcuts</title>
     <style>
+        @media screen and (min-width: 1400px) {
+            body {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+        @media screen and (min-width: 300px) {
+            body {
+                margin: 0 15px;
+            }
+            .tag {
+                padding: 6px 12px;
+            }
+        }
         body {
             -webkit-overflow-scrolling: touch;
             touch-action: manipulation;
-            max-width: 600px;
-            margin: 0 auto;
+            
             display: grid;
             height: calc(100vh - 50px);
         }
@@ -21,7 +34,7 @@
             background-color: #bfe2ff;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 15px;
         }
         .tag.selected {
             background-color: #40a3ff;
@@ -131,20 +144,21 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.5</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.6</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
-            <input type="text" id="content-input" autofocus placeholder="例如：[吃饭]">
+            <input type="text" id="content-input" autofocus placeholder="e.g.: 吃饭">
             <div id="tag-container">
             </div>
             <!--<label for="content-amount">金额:</label>-->
         </div>
+        <hr/>
         <div class="row row-no-wrap m-10">
             <div id="calculator">
                 <div id="keypad">
                     <button class="calc-key">C</button>
-                    <input type="text" id="content-amount" placeholder="(点此可删末端) 0" readonly>
+                    <input type="text" id="content-amount" placeholder="(可点此 Delete) 0" readonly>
                     <button class="calc-key">1</button>
                     <button class="calc-key">2</button>
                     <button class="calc-key">3</button>
@@ -163,7 +177,7 @@
                     <button class="calc-key">=</button>
                 </div>
             </div>
-            <textarea id="content-remark" placeholder="关于此笔消费的详细内容"></textarea>
+            <textarea id="content-remark" placeholder="可輸入关于此笔消费的详细内容 e.g.:老板请吃"></textarea>
         </div>
         <button id="button-submit" class="btn-submit btn disabled w-100 m-10" onclick="submitData()">提交</button>
         <div class="row row-wrap w-100">
@@ -200,7 +214,6 @@
             case FOCUS_TYPES.FAKE:
                 input.classList.add('has-focus')
                 const onBlur = (input) => {
-                    console.log(input);
                     if(input.hasOwnProperty('classList')){
                         console.log(input.classList);
                         if(input.classList.includes('has-focus')){
@@ -225,7 +238,7 @@
     };
     let prevSuggestedRemark = null;
     let customTextarea = {
-        '打油': 'ODO：\nTrip：\nRon95'
+        '打油': 'ODO：\nTrip：\nCarPlate: \nRon95'
     }
     let selectedTag = null; 
 
