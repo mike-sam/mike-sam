@@ -169,7 +169,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.9b</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.9c</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -433,7 +433,8 @@
         await pushToGsheet(contents_for_gsheets);
         // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
         document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
-        _p_ele = document.createElement('p').textContent = submitted_value;
+        _p_ele = document.createElement("p");
+        _p_ele.textContent = submitted_value;
         document.getElementById("record").appendChild(_p_ele);
         document.getElementById('empty-btn').click();
         
