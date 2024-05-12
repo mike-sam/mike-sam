@@ -80,7 +80,7 @@
             border: 0px;
         }
       
-        #empty-input {
+        #empty-btn {
             border-radius: 5px;
             background-color: #373aeb;
             color: white;
@@ -169,13 +169,13 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8i</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8j</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
             <div class="grid grid-2">
                 <input type="text" id="content-input" autofocus placeholder="e.g.: 吃饭">
-                <button id="empty-input"><i class="fa fa-eraser" style="margin-right:5px;"></i>&nbsp;清空</button>
+                <button id="empty-btn"><i class="fa fa-eraser" style="margin-right:5px;"></i>&nbsp;清空</button>
             </div>
             <div id="tag-container">
             </div>
@@ -434,11 +434,7 @@
         window.location.href = shortcutUrl;
         document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
         document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
-        document.getElementById("content-input").value = '';
-        document.getElementById("content-amount").value = 0;
-        document.getElementById("content-remark").value = '';
-        selectedTag = null;
-        selectTag('');
+        document.getElementById('empty-btn').click();
 
     }
     function cleanPageAndLeave() {
@@ -472,8 +468,12 @@
         return null;
     }
 
-    document.getElementById('empty-input').addEventListener('click',function(){
-        document.getElementById('content-input').value = '';
+    document.getElementById('empty-btn').addEventListener('click',function(){
+        document.getElementById("content-input").value = '';
+        document.getElementById("content-amount").value = 0;
+        document.getElementById("content-remark").value = '';
+        selectedTag = null;
+        selectTag('');
         toggleSubmitButton();
     });
     document.getElementById('content-amount').addEventListener('click',function(){
