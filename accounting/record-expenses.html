@@ -164,7 +164,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8b</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -385,7 +385,7 @@
         const title = document.getElementById("content-input").value;
         const amount = document.getElementById("content-amount").value;
         const remark = document.getElementById("content-remark").value;
-        const location = document.getElementById("content-location").value;
+        const geolocation = document.getElementById("content-location").value;
         const separator = '|'
         if(title.trim() == ''){
             document.getElementById("content-input").focus();
@@ -406,14 +406,14 @@
                   title: title,
                   amount: amount,
                   remark: remark,
-                  location: location,
+                  geolocation: geolocation,
                   tag: selectedTag,
               }),
               headers: {
                   "Content-type": "application/json; charset=UTF-8"
               }
         });
-        let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+location;
+        let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
         const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
         // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
         window.location.href = shortcutUrl;
