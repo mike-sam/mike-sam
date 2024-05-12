@@ -164,7 +164,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8f</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8g</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -399,13 +399,14 @@
         // const contentInput = document.getElementById("content-input").value;
         // const [title, amount] = contentInput.split(" ");
         let gs_appscript_url = 'https://script.google.com/macros/s/AKfycbz_CkMTA6fJM8neg2pIlvFwbDu_G28mz1Ye7Ng4PyXt5UkLQdgaeYnOzrcxVvA-oD4yDQ/exec';
-        fetch(gs_appscript_url, {
+        await fetch(gs_appscript_url, {
               method: "POST",
               mode: "no-cors",
               redirect: "follow",
               body: JSON.stringify({
                   timestamp: datetimetoYMDHIS(),
                   title: title,
+                  yearmonth: datetimetoYM(),
                   amount: amount,
                   remark: remark,
                   geolocation: geolocation,
@@ -419,17 +420,17 @@
         }).catch(err => {
             console.log("Error:" + err);
         });
-        // let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
-        // const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
-        // // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
-        // window.location.href = shortcutUrl;
-        // document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
-        // document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
-        // document.getElementById("content-input").value = '';
-        // document.getElementById("content-amount").value = 0;
-        // document.getElementById("content-remark").value = '';
-        // selectedTag = null;
-        // selectTag('');
+        let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
+        const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
+        // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
+        window.location.href = shortcutUrl;
+        document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
+        document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
+        document.getElementById("content-input").value = '';
+        document.getElementById("content-amount").value = 0;
+        document.getElementById("content-remark").value = '';
+        selectedTag = null;
+        selectTag('');
 
     }
     function cleanPageAndLeave() {
@@ -511,6 +512,16 @@
       let minutes = date.getMinutes();
       let seconds = date.getSeconds();
       return year + "-" + month.toString().padStart(2,"0") + "-" + day.toString().padStart(2,"0") + " " + hours.toString().padStart(2,"0") + ":" + minutes.toString().padStart(2,"0") + ":" + seconds.toString().padStart(2,"0");
+    }
+    function datetimetoYM(inputDateTime = new Date()){
+      let date = inputDateTime;
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let seconds = date.getSeconds();
+      return year + month.toString().padStart(2,"0");
     }
     window.onload = fetchDataAndExtractTags;
     function focusAutofocus(){
