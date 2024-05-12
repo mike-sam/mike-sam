@@ -164,7 +164,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8g</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8h</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -281,7 +281,22 @@
         });
     }
 
-    
+    async function pushToGsheet(contents){
+        let gs_appscript_url = 'https://script.google.com/macros/s/AKfycbz_CkMTA6fJM8neg2pIlvFwbDu_G28mz1Ye7Ng4PyXt5UkLQdgaeYnOzrcxVvA-oD4yDQ/exec';
+        fetch(gs_appscript_url, {
+              method: "POST",
+              mode: "no-cors",
+              redirect: "follow",
+              body: JSON.stringify(contents),
+              headers: {
+                  "Content-type": "application/json; charset=UTF-8"
+              }
+        }).then(response => {
+            console.log("success:", response);
+        }).catch(err => {
+            console.log("Error:" + err);
+        });
+    }
     
     function selectTag(tagName) {
         selectedTag = tagName;
@@ -381,7 +396,7 @@
         document.getElementById("geolocation-href").innerHTML = "Geolocation is not supported by this browser.";
     }
     
-    function submitData() {
+    async function submitData() {
         const title = document.getElementById("content-input").value;
         const amount = document.getElementById("content-amount").value;
         const remark = document.getElementById("content-remark").value;
@@ -397,31 +412,19 @@
         }
         
         // const contentInput = document.getElementById("content-input").value;
-        // const [title, amount] = contentInput.split(" ");
-        let gs_appscript_url = 'https://script.google.com/macros/s/AKfycbz_CkMTA6fJM8neg2pIlvFwbDu_G28mz1Ye7Ng4PyXt5UkLQdgaeYnOzrcxVvA-oD4yDQ/exec';
-        await fetch(gs_appscript_url, {
-              method: "POST",
-              mode: "no-cors",
-              redirect: "follow",
-              body: JSON.stringify({
-                  timestamp: datetimetoYMDHIS(),
-                  title: title,
-                  yearmonth: datetimetoYM(),
-                  amount: amount,
-                  remark: remark,
-                  geolocation: geolocation,
-                  tag: selectedTag,
-              }),
-              headers: {
-                  "Content-type": "application/json; charset=UTF-8"
-              }
-        }).then(response => {
-            console.log("success:", response);
-        }).catch(err => {
-            console.log("Error:" + err);
-        });
+        // const [title, amount] = contentInput.split(" ");        
         let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
         const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
+        let contents_for_gsheets = {
+            timestamp: datetimetoYMDHIS(),
+            title: title,
+            yearmonth: datetimetoYM(),
+            amount: amount,
+            remark: remark,
+            geolocation: geolocation,
+            tag: selectedTag,
+        };
+        await pushToGsheet(contents_for_gsheets);
         // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
         window.location.href = shortcutUrl;
         document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
