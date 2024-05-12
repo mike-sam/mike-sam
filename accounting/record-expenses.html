@@ -164,7 +164,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8e</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8f</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -401,6 +401,7 @@
         let gs_appscript_url = 'https://script.google.com/macros/s/AKfycbz_CkMTA6fJM8neg2pIlvFwbDu_G28mz1Ye7Ng4PyXt5UkLQdgaeYnOzrcxVvA-oD4yDQ/exec';
         fetch(gs_appscript_url, {
               method: "POST",
+              mode: "no-cors",
               redirect: "follow",
               body: JSON.stringify({
                   timestamp: datetimetoYMDHIS(),
