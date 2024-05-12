@@ -169,7 +169,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.9a</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.9b</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -419,6 +419,7 @@
         // const contentInput = document.getElementById("content-input").value;
         // const [title, amount] = contentInput.split(" ");        
         let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
+        let _p_ele = null;
         const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
         let contents_for_gsheets = {
             timestamp: datetimetoYMDHIS(),
@@ -432,8 +433,8 @@
         await pushToGsheet(contents_for_gsheets);
         // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
         document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
-        let submitted_value = document.createElement('p').textContent = submitted_value;
-        document.getElementById("record").appendChild(submitted_value);
+        _p_ele = document.createElement('p').textContent = submitted_value;
+        document.getElementById("record").appendChild(_p_ele);
         document.getElementById('empty-btn').click();
         
         setTimeout (function() {window.location.href = shortcutUrl;},100);
