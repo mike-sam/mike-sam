@@ -169,7 +169,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8k</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.9</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -287,7 +287,7 @@
     }
 
     async function pushToGsheet(contents){
-        let gs_appscript_url = 'https://script.google.com/macros/s/AKfycbz_CkMTA6fJM8neg2pIlvFwbDu_G28mz1Ye7Ng4PyXt5UkLQdgaeYnOzrcxVvA-oD4yDQ/exec';
+        let gs_appscript_url = 'https://script.google.com/macros/s/AKfycbz6fcKNTX7_jwq7Dqh6-NhUT96b5WQbOKD1MsepId54gNaHi5XK4oSEy8dbpVrUEOIDew/exec';
         fetch(gs_appscript_url, {
               method: "POST",
               mode: "no-cors",
@@ -434,8 +434,8 @@
         document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
         document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
         document.getElementById('empty-btn').click();
-        window.location.href = shortcutUrl;
         
+        setTimeout (function() {window.location.href = shortcutUrl;},100);
 
     }
     function cleanPageAndLeave() {
