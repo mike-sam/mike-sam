@@ -164,7 +164,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8b</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8c</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -413,17 +413,17 @@
                   "Content-type": "application/json; charset=UTF-8"
               }
         });
-        let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
-        const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
-        // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
-        window.location.href = shortcutUrl;
-        document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
-        document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
-        document.getElementById("content-input").value = '';
-        document.getElementById("content-amount").value = 0;
-        document.getElementById("content-remark").value = '';
-        selectedTag = null;
-        selectTag('');
+        // let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
+        // const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
+        // // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
+        // window.location.href = shortcutUrl;
+        // document.getElementById("o").innerHTML = '<a href="'+shortcutUrl+'">'+shortcutUrl+'</a>';
+        // document.getElementById("record").appendChild('<b>'+submitted_value+'</b><br/>');
+        // document.getElementById("content-input").value = '';
+        // document.getElementById("content-amount").value = 0;
+        // document.getElementById("content-remark").value = '';
+        // selectedTag = null;
+        // selectTag('');
 
     }
     function cleanPageAndLeave() {
