@@ -164,7 +164,7 @@
 <body>
     <div style="align-self: center;">
 
-        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.7b</b></span>
+        <span style="color: #ccc;">Expenses record tools  - integrated with iOS Shortcuts - <b>v3.3.8</b></span>
         
         <div class="row row-wrap m-10 p-10">
             <!--<label for="content-input">明目:</label>-->
@@ -398,6 +398,21 @@
         
         // const contentInput = document.getElementById("content-input").value;
         // const [title, amount] = contentInput.split(" ");
+        let gs_appscript_url = 'https://script.google.com/macros/s/AKfycby0n7Gl1zhxvb3LRPDLReGcS3d8LLN45F_sC9pRVvN--Pu_udDsvaWz227SHOux1anVeQ/exec';
+        fetch(gs_appscript_url, {
+              method: "POST",
+              body: JSON.stringify({
+                  timestamp: datetimetoYMDHIS(),
+                  title: title,
+                  amount: amount,
+                  remark: remark,
+                  location: location,
+                  tag: selectedTag,
+              }),
+              headers: {
+                  "Content-type": "application/json; charset=UTF-8"
+              }
+        });
         let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+location;
         const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
         // sendObjectMessage(`${encodeURIComponent(title+" "+amount+" "+selectedTag)}`);
@@ -480,9 +495,17 @@
     });
     document.getElementById('content-amount').addEventListener('change', function() {
         console.log('amount changed');
-        
     });
-
+    function datetimetoYMDHIS(inputDateTime = new Date()){
+      let date = inputDateTime;
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let seconds = date.getSeconds();
+      return year + "-" + month.toString().padStart(2,"0") + "-" + day.toString().padStart(2,"0") + " " + hours.toString().padStart(2,"0") + ":" + minutes.toString().padStart(2,"0") + ":" + seconds.toString().padStart(2,"0");
+    }
     window.onload = fetchDataAndExtractTags;
     function focusAutofocus(){
         let autofocusedInput = Array.prototype.slice.call(
