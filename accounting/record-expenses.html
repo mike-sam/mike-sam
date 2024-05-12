@@ -398,7 +398,7 @@
         
         // const contentInput = document.getElementById("content-input").value;
         // const [title, amount] = contentInput.split(" ");
-        let gs_appscript_url = 'https://script.google.com/macros/s/AKfycby0n7Gl1zhxvb3LRPDLReGcS3d8LLN45F_sC9pRVvN--Pu_udDsvaWz227SHOux1anVeQ/exec';
+        let gs_appscript_url = 'https://script.google.com/macros/s/AKfycbyroIOwA5OAnwN2ca3GR3u85UiQcJnW_iN4GaiKtVBvpqnqIE_nP5inHNr6fKr15xONSQ/exec';
         fetch(gs_appscript_url, {
               method: "POST",
               body: JSON.stringify({
@@ -412,6 +412,10 @@
               headers: {
                   "Content-type": "application/json; charset=UTF-8"
               }
+        }).then(response => {
+            console.log("success:", response);
+        }).catch(err => {
+            console.log("Error:" + err);
         });
         // let submitted_value = title+separator+amount+separator+selectedTag+separator+remark+separator+geolocation;
         // const shortcutUrl = 'shortcuts://run-shortcut?name=WebRecordExpenses&input=text&text='+encodeURIComponent(submitted_value);
