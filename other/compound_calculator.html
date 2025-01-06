@@ -11,7 +11,7 @@
       background-color: #f9f9f9;
       color: #333;
     }
-    h1, h2 {
+    h1 {
       text-align: center;
       color: #4CAF50;
     }
@@ -51,8 +51,33 @@
     button:hover {
       background-color: #45a049;
     }
+    .share-link {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .share-link input {
+      width: 80%;
+      padding: 10px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .share-link p {
+      cursor: pointer;
+      color: #4CAF50;
+      text-decoration: underline;
+      display: inline-block;
+    }
+    .share-link p:hover {
+      color: #45a049;
+    }
+    .table-container {
+      overflow: auto; /* Enable scroll for small screens */
+      margin-top: 20px;
+      position: relative;
+    }
     table {
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       width: 100%;
       margin-top: 20px;
       background-color: white;
@@ -67,24 +92,18 @@
     th {
       background-color: #4CAF50;
       color: white;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    td:first-child, th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background-color: #f1f1f1;
     }
     tr:nth-child(even) {
       background-color: #f2f2f2;
-    }
-    .table-container {
-      overflow-x: auto; /* Enable horizontal scroll for small screens */
-      margin-top: 20px;
-    }
-    .share-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .share-link input {
-      width: 80%;
-      padding: 10px;
-      font-size: 14px;
-      text-align: center;
-      margin-top: 10px;
     }
   </style>
 </head>
@@ -114,13 +133,13 @@
     <button type="button" onclick="calculateCompoundInterest()">Calculate</button>
   </div>
 
-  <h2>Results:</h2>
-  <div class="table-container" id="result"></div>
-
-  <div class="share-link">
+  <div class="share-link" id="shareLinkContainer" style="display: none;">
     <h3>Share Link:</h3>
-    <input type="text" id="shareLink" readonly>
+    <p id="shareLinkText" onclick="copyShareLink()">Click to Copy</p>
   </div>
+
+  <h2 id="resultTitle" style="text-align: center;">Results:</h2>
+  <div class="table-container" id="result"></div>
 
   <script>
     // Parse URL Parameters and populate fields
@@ -197,7 +216,19 @@
         interestRate: parseFloat(document.getElementById('interestRate').value),
       });
       const shareLink = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-      document.getElementById('shareLink').value = shareLink;
+      document.getElementById('shareLinkText').textContent = shareLink;
+      document.getElementById('shareLinkContainer').style.display = 'block';
+
+      // Hide "Results:" title
+      document.getElementById('resultTitle').style.display = 'none';
+    }
+
+    // Copy share link to clipboard
+    function copyShareLink() {
+      const shareLinkText = document.getElementById('shareLinkText').textContent;
+      navigator.clipboard.writeText(shareLinkText).then(() => {
+        alert('Share link copied to clipboard!');
+      });
     }
 
     // Populate fields if parameters exist in the URL
