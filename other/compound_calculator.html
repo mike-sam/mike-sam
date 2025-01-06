@@ -5,28 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compound Interest Calculator</title>
   <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #f2f2f2;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+      color: #333;
     }
     h1, h2 {
       text-align: center;
+      color: #4CAF50;
     }
     form {
       text-align: center;
       margin-top: 20px;
     }
     label, input, button {
-      margin: 5px;
+      margin: 10px 5px;
+      font-size: 16px;
+    }
+    input {
+      padding: 5px;
+      width: 200px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    table {
+      border-collapse: collapse;
+      width: 90%;
+      margin: 20px auto;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
     }
   </style>
 </head>
@@ -35,16 +67,16 @@
 
   <form id="calculatorForm">
     <label for="annualContribution">Annual Contribution (e.g., 1000):</label>
-    <input type="number" id="annualContribution" required><br><br>
+    <input type="number" id="annualContribution" value="1000" required><br><br>
 
     <label for="fixedYears">Number of Years for Fixed Contributions:</label>
-    <input type="number" id="fixedYears" required><br><br>
+    <input type="number" id="fixedYears" value="10" required><br><br>
 
     <label for="totalYears">Total Years to Calculate:</label>
-    <input type="number" id="totalYears" required><br><br>
+    <input type="number" id="totalYears" value="30" required><br><br>
 
     <label for="interestRate">Annual Interest Rate (e.g., 4 for 4%):</label>
-    <input type="number" id="interestRate" step="0.01" required><br><br>
+    <input type="number" id="interestRate" value="4" step="0.01" required><br><br>
 
     <button type="button" onclick="calculateCompoundInterest()">Calculate</button>
   </form>
