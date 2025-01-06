@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sticky Table Example</title>
+  <title>简易复利计算机</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -226,6 +226,31 @@
       document.execCommand('copy');
       alert('Share link copied to clipboard!');
     }
+    
+    function populateFieldsFromURL() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.has('annualContribution')) {
+        document.getElementById('annualContribution').value = params.get('annualContribution');
+      }
+      if (params.has('fixedYears')) {
+        document.getElementById('fixedYears').value = params.get('fixedYears');
+      }
+      if (params.has('totalYears')) {
+        document.getElementById('totalYears').value = params.get('totalYears');
+      }
+      if (params.has('interestRate')) {
+        document.getElementById('interestRate').value = params.get('interestRate');
+      }
+
+      // Auto-generate the table if parameters are present
+      if (params.has('annualContribution') || params.has('fixedYears') || params.has('totalYears') || params.has('interestRate')) {
+        generateTable();
+      }
+    }
+
+    // Populate fields from URL on page load
+    window.onload = populateFieldsFromURL;
   </script>
 </body>
 </html>
