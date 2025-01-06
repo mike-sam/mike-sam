@@ -60,6 +60,10 @@
       padding: 10px;
       font-size: 14px;
       text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
     }
     .share-link p {
       cursor: pointer;
@@ -100,7 +104,7 @@
       position: sticky;
       left: 0;
       z-index: 1;
-      background-color: #f1f1f1;
+      background-color: #f1f1f1; /* Match first column with the table color */
     }
     tr:nth-child(even) {
       background-color: #f2f2f2;
@@ -135,7 +139,7 @@
 
   <div class="share-link" id="shareLinkContainer" style="display: none;">
     <h3>Share Link:</h3>
-    <p id="shareLinkText" onclick="copyShareLink()">Click to Copy</p>
+    <input type="text" id="shareLinkText" readonly onclick="copyShareLink()">
   </div>
 
   <h2 id="resultTitle" style="text-align: center;">Results:</h2>
@@ -216,7 +220,7 @@
         interestRate: parseFloat(document.getElementById('interestRate').value),
       });
       const shareLink = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-      document.getElementById('shareLinkText').textContent = shareLink;
+      document.getElementById('shareLinkText').value = shareLink;
       document.getElementById('shareLinkContainer').style.display = 'block';
 
       // Hide "Results:" title
@@ -225,10 +229,10 @@
 
     // Copy share link to clipboard
     function copyShareLink() {
-      const shareLinkText = document.getElementById('shareLinkText').textContent;
-      navigator.clipboard.writeText(shareLinkText).then(() => {
-        alert('Share link copied to clipboard!');
-      });
+      const shareLinkText = document.getElementById('shareLinkText');
+      shareLinkText.select();
+      document.execCommand('copy');
+      alert('Share link copied to clipboard!');
     }
 
     // Populate fields if parameters exist in the URL
