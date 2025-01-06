@@ -51,10 +51,26 @@
     button:hover {
       background-color: #45a049;
     }
+    .share-link {
+      text-align: center;
+      margin: 20px 0;
+      display: none; /* Hide by default */
+    }
+    .share-link input {
+      width: 80%;
+      padding: 10px;
+      font-size: 14px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .table-container {
-      overflow: auto; /* Enable scroll for sticky behavior */
-      max-height: 70vh;
+      overflow: auto;
+      margin-top: 20px;
       border: 1px solid #ddd;
+      max-height: 70vh;
+      display: none; /* Hide table container by default */
     }
     table {
       border-collapse: collapse;
@@ -69,15 +85,15 @@
     }
     thead th {
       position: sticky;
-      top: 0; /* Sticky top for header row */
-      background-color: #4CAF50; /* Header background color */
+      top: 0;
+      background-color: #4CAF50;
       color: white;
       z-index: 3;
     }
     tbody td:first-child, thead th:first-child {
       position: sticky;
-      left: 0; /* Sticky first column */
-      background-color: #4CAF50; /* First column background color */
+      left: 0;
+      background-color: #4CAF50;
       color: white;
       z-index: 2;
     }
@@ -115,6 +131,11 @@
     <button type="button" onclick="generateTable()">Generate Table</button>
   </div>
 
+  <div class="share-link" id="shareLinkContainer">
+    <h3>Click to copy to share!</h3>
+    <input type="text" id="shareLinkText" readonly onclick="copyShareLink()">
+  </div>
+
   <div class="table-container" id="tableContainer">
     <table id="resultTable">
       <thead>
@@ -135,8 +156,13 @@
 
   <script>
     function generateTable() {
+      const tableContainer = document.getElementById('tableContainer');
       const tableBody = document.querySelector('#resultTable tbody');
+      const shareLinkContainer = document.getElementById('shareLinkContainer');
+
       tableBody.innerHTML = ''; // Clear existing rows
+      tableContainer.style.display = 'block'; // Show table container
+      shareLinkContainer.style.display = 'block'; // Show share link
 
       const annualContribution = parseFloat(document.getElementById('annualContribution').value);
       const fixedYears = parseInt(document.getElementById('fixedYears').value, 10);
@@ -173,6 +199,32 @@
 
         tableBody.innerHTML += row;
       }
+
+      generateShareLink();
+    }
+
+    function generateShareLink() {
+      const annualContribution = document.getElementById('annualContribution').value;
+      const fixedYears = document.getElementById('fixedYears').value;
+      const totalYears = document.getElementById('totalYears').value;
+      const interestRate = document.getElementById('interestRate').value;
+
+      const params = new URLSearchParams({
+        annualContribution,
+        fixedYears,
+        totalYears,
+        interestRate,
+      });
+
+      const shareLink = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+      document.getElementById('shareLinkText').value = shareLink;
+    }
+
+    function copyShareLink() {
+      const shareLinkText = document.getElementById('shareLinkText');
+      shareLinkText.select();
+      document.execCommand('copy');
+      alert('Share link copied to clipboard!');
     }
   </script>
 </body>
