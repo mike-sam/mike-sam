@@ -23,7 +23,7 @@
       margin: 20px 0;
     }
     .form-field {
-      flex: 1 1 calc(50% - 40px); /* Two columns with some gap */
+      flex: 1 1 calc(50% - 40px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -63,7 +63,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      display: inline-block;
     }
     .table-container {
       overflow: auto;
@@ -86,17 +85,21 @@
       background-color: #4CAF50;
       color: white;
       position: sticky;
-      top: 0; /* Sticky header */
+      top: 0; /* Sticky top for header row */
       z-index: 3;
     }
     td:first-child, th:first-child {
       position: sticky;
       left: 0; /* Sticky first column */
+      background-color: #4CAF50; /* Match header color */
+      color: white;
       z-index: 2;
-      background-color: #f1f1f1;
     }
     tr:nth-child(even) {
       background-color: #f9f9f9;
+    }
+    tr:nth-child(odd) {
+      background-color: #ffffff;
     }
   </style>
 </head>
