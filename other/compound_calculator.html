@@ -65,25 +65,14 @@
       text-overflow: ellipsis;
       display: inline-block;
     }
-    .share-link p {
-      cursor: pointer;
-      color: #4CAF50;
-      text-decoration: underline;
-      display: inline-block;
-    }
-    .share-link p:hover {
-      color: #45a049;
-    }
     .table-container {
       overflow: auto;
       margin-top: 20px;
       position: relative;
     }
     table {
-      border-collapse: separate;
-      border-spacing: 0;
+      border-collapse: collapse;
       width: 100%;
-      margin-top: 20px;
       background-color: white;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -97,18 +86,17 @@
       background-color: #4CAF50;
       color: white;
       position: sticky;
-      top: 0;
-      z-index: 2;
+      top: 0; /* Sticky header */
+      z-index: 3;
     }
     td:first-child, th:first-child {
       position: sticky;
-      left: 0;
-      z-index: 1;
-      background-color: #4CAF50;
-      color: white; /* Ensure first column matches table header color */
+      left: 0; /* Sticky first column */
+      z-index: 2;
+      background-color: #f1f1f1;
     }
     tr:nth-child(even) {
-      background-color: #f2f2f2;
+      background-color: #f9f9f9;
     }
   </style>
 </head>
@@ -143,7 +131,6 @@
     <input type="text" id="shareLinkText" readonly onclick="copyShareLink()">
   </div>
 
-  <h2 id="resultTitle" style="text-align: center;">Results:</h2>
   <div class="table-container" id="result"></div>
 
   <script>
@@ -223,9 +210,6 @@
       const shareLink = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
       document.getElementById('shareLinkText').value = shareLink;
       document.getElementById('shareLinkContainer').style.display = 'block';
-
-      // Hide "Results:" title
-      document.getElementById('resultTitle').style.display = 'none';
     }
 
     // Copy share link to clipboard
