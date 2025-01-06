@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compound Interest Calculator</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    form {
+      text-align: center;
+      margin-top: 20px;
+    }
+    label, input, button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Compound Interest Calculator</h1>
+
+  <form id="calculatorForm">
+    <label for="annualContribution">Annual Contribution (e.g., 1000):</label>
+    <input type="number" id="annualContribution" required><br><br>
+
+    <label for="fixedYears">Number of Years for Fixed Contributions:</label>
+    <input type="number" id="fixedYears" required><br><br>
+
+    <label for="totalYears">Total Years to Calculate:</label>
+    <input type="number" id="totalYears" required><br><br>
+
+    <label for="interestRate">Annual Interest Rate (e.g., 4 for 4%):</label>
+    <input type="number" id="interestRate" step="0.01" required><br><br>
+
+    <button type="button" onclick="calculateCompoundInterest()">Calculate</button>
+  </form>
+
+  <h2>Results:</h2>
+  <div id="result"></div>
+
+  <script>
+    function calculateCompoundInterest() {
+      const annualContribution = parseFloat(document.getElementById('annualContribution').value);
+      const fixedYears = parseInt(document.getElementById('fixedYears').value, 10);
+      const totalYears = parseInt(document.getElementById('totalYears').value, 10);
+      const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+
+      let total = 0;
+      let accumulatedPrincipal = 0;
+      let accumulatedInterest = 0;
+      let resultTable = `
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Accumulated Principal</th>
+              <th>Contributed Principal</th>
+              <th>Accumulated Interest</th>
+              <th>This Year's Interest</th>
+              <th>Total Accumulated Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      for (let year = 1; year <= totalYears; year++) {
+        let contribution = 0;
+        let thisYearInterest = 0;
+
+        if (year <= fixedYears) {
+          contribution = annualContribution;
+          accumulatedPrincipal += contribution;
+        }
+
+        thisYearInterest = total * interestRate;
+        accumulatedInterest += thisYearInterest;
+        total += contribution + thisYearInterest;
+
+        resultTable += `
+          <tr>
+            <td>${year}</td>
+            <td>${accumulatedPrincipal.toFixed(2)}</td>
+            <td>${contribution > 0 ? contribution.toFixed(2) : '-'}</td>
+            <td>${accumulatedInterest.toFixed(2)}</td>
+            <td>${thisYearInterest.toFixed(2)}</td>
+            <td>${total.toFixed(2)}</td>
+          </tr>
+        `;
+      }
+
+      resultTable += `
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById('result').innerHTML = resultTable;
+    }
+  </script>
+</body>
+</html>
