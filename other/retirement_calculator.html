@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retirement Estimator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+    }
+    .form-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .form-field {
+      flex: 1 1 calc(50% - 40px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    label {
+      margin-bottom: 5px;
+      font-size: 16px;
+    }
+    input[type="number"], select {
+      padding: 5px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+    }
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      background-color: #45a049;
+    }
+    .tab-container {
+      margin-top: 20px;
+      width: 100%;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #4CAF50;
+    }
+    .tabs div {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      background-color: #f9f9f9;
+      border: 1px solid #4CAF50;
+      border-bottom: none;
+    }
+    .tabs div.active {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background-color: white;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:nth-child(odd) {
+      background-color: white;
+    }
+    .summary {
+      margin: 20px 0;
+      font-size: 16px;
+      color: #333;
+      text-align: center;
+    }
+    .highlight {
+      color: #d9534f;
+      font-weight: bold;
+    }
+    .tag {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Retirement Amount Estimator</h1>
+
+  <div class="form-container">
+    <div class="form-field">
+      <label for="retirementAmount">Retirement Amount:</label>
+      <input type="number" id="retirementAmount" value="1000000" required>
+    </div>
+    <div class="form-field">
+      <label for="retirementAge">Retirement Age (default 55):</label>
+      <input type="number" id="retirementAge" value="55" required>
+    </div>
+    <div class="form-field">
+      <label for="currentAge">Current Age (required):</label>
+      <input type="number" id="currentAge" placeholder="Enter current age" required>
+    </div>
+    <div class="form-field">
+      <label for="fixedYears">Years of Contribution:</label>
+      <input type="number" id="fixedYears" value="10" required>
+    </div>
+    <div class="form-field">
+      <label for="contributionFrequency">Contribution Frequency:</label>
+      <select id="contributionFrequency">
+        <option value="12">Monthly</option>
+        <option value="4">Quarterly</option>
+        <option value="1">Yearly</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="interestRate">Annual Interest Rate (%):</label>
+      <input type="number" id="interestRate" value="4" step="0.01" required>
+    </div>
+    <div class="form-field">
+      <label for="customContribution">Custom Contribution Amount:</label>
+      <input type="number" id="customContribution" value="5000" required>
+    </div>
+    <div class="form-field">
+      <label>
+        <input type="checkbox" id="includeInterest"> Calculate Contribution with Interest
+      </label>
+    </div>
+  </div>
+
+  <div style="text-align: center;">
+    <button type="button" onclick="calculateEstimate()" id="calculateButton" disabled>Calculate Estimate</button>
+  </div>
+
+  <div class="summary" id="summaryText" style="display:none;"></div>
+
+  <div class="tab-container" id="tabContainer" style="display:none;">
+    <div class="tabs">
+      <div class="active" onclick="switchTab('generalTable')">General Results</div>
+      <div onclick="switchTab('customTable')">Custom Contribution</div>
+    </div>
+
+    <div id="generalTable" class="tab-content active">
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Contribution</th>
+            <th>Interest</th>
+            <th>Total Contribution</th>
+            <th>Total With Interest</th>
+          </tr>
+        </thead>
+        <tbody id="generalTableBody"></tbody>
+      </table>
+    </div>
+
+    <div id="customTable" class="tab-content">
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Contribution</th>
+            <th>Interest</th>
+            <th>Total Contribution</th>
+            <th>Total With Interest</th>
+          </tr>
+        </thead>
+        <tbody id="customTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function enableButtonIfValid() {
+      const currentAge = document.getElementById('currentAge').value;
+      const calculateButton = document.getElementById('calculateButton');
+
+      if (currentAge.trim() !== '' && parseInt(currentAge) > 0) {
+        calculateButton.disabled = false;
+      } else {
+        calculateButton.disabled = true;
+      }
+    }
+
+    function switchTab(tabId) {
+      // Remove active class from all tabs
+      const tabs = document.querySelectorAll('.tabs div');
+      tabs.forEach(tab => tab.classList.remove('active'));
+
+      // Add active class to clicked tab
+      const activeTab = document.querySelector(`.tabs div[onclick="switchTab('${tabId}')"]`);
+      activeTab.classList.add('active');
+
+      // Hide all tab content
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => content.classList.remove('active'));
+
+      // Show the selected tab content
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function calculateEstimate() {
+      const retirementAmount = parseFloat(document.getElementById('retirementAmount').value);
+      const retirementAge = parseInt(document.getElementById('retirementAge').value, 10) || 55;
+      const currentAge = parseInt(document.getElementById('currentAge').value, 10);
+      const fixedYears = parseInt(document.getElementById('fixedYears').value, 10);
+      const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+      const contributionFrequency = parseInt(document.getElementById('contributionFrequency').value, 10);
+      const customContribution = parseFloat(document.getElementById('customContribution').value);
+      const includeInterest = document.getElementById('includeInterest').checked;
+
+      const totalYears = retirementAge - currentAge;
+      const generalTableBody = document.getElementById("generalTableBody");
+      const customTableBody = document.getElementById("customTableBody");
+
+      generalTableBody.innerHTML = "";
+      customTableBody.innerHTML = "";
+
+      let accumulatedAmount = 0;
+      let totalContribution = 0;
+
+      // General Calculation
+      let annualContribution = retirementAmount / (fixedYears * contributionFrequency);
+
+      if (includeInterest) {
+        let low = 0, high = retirementAmount;
+        while (high - low > 0.01) {
+          annualContribution = (low + high) / 2;
+          let tempAccumulated = 0;
+          for (let year = 1; year <= totalYears; year++) {
+            let contribution = year <= fixedYears ? annualContribution * contributionFrequency : 0;
+            let interest = tempAccumulated * interestRate;
+            tempAccumulated += contribution + interest;
+          }
+          if (tempAccumulated >= retirementAmount) high = annualContribution;
+          else low = annualContribution;
+        }
+      }
+
+      accumulatedAmount = 0;
+      totalContribution = 0;
+
+      for (let year = 1; year <= totalYears; year++) {
+        let contribution = year <= fixedYears ? annualContribution * contributionFrequency : 0;
+        let interest = accumulatedAmount * interestRate;
+        accumulatedAmount += contribution + interest;
+        totalContribution += contribution;
+
+        generalTableBody.innerHTML += `
+          <tr>
+            <td>${year}</td>
+            <td>${contribution.toFixed(2)}</td>
+            <td>${interest.toFixed(2)}</td>
+            <td>${totalContribution.toFixed(2)}</td>
+            <td>${accumulatedAmount.toFixed(2)}</td>
+          </tr>
+        `;
+      }
+
+      // Custom Calculation
+      accumulatedAmount = 0;
+      totalContribution = 0;
+
+      for (let year = 1; year <= totalYears; year++) {
+        let contribution = year <= fixedYears ? customContribution * contributionFrequency : 0;
+        let interest = includeInterest ? accumulatedAmount * interestRate : 0;
+        accumulatedAmount += contribution + interest;
+        totalContribution += contribution;
+
+        customTableBody.innerHTML += `
+          <tr>
+            <td>${year}</td>
+            <td>${contribution.toFixed(2)}</td>
+            <td>${interest.toFixed(2)}</td>
+            <td>${totalContribution.toFixed(2)}</td>
+            <td>${accumulatedAmount.toFixed(2)}</td>
+          </tr>
+        `;
+      }
+
+      // Summary
+      const annualSave = (annualContribution * contributionFrequency).toFixed(2);
+      const monthlySave = (annualContribution).toFixed(2);
+      const difference = retirementAmount - accumulatedAmount;
+
+      document.getElementById("summaryText").innerHTML = `
+        To reach your desired retirement amount, you need to save <span class="highlight">$${annualSave}</span> per year. 
+        <span class="tag">$${monthlySave}/month</span><br>
+        Based on your current input, your retirement amount will be <span class="highlight">$${accumulatedAmount.toFixed(2)}</span>. 
+        The difference is <span class="highlight">$${difference.toFixed(2)}</span>.
+      `;
+      document.getElementById("summaryText").style.display = "block";
+
+      document.getElementById("tabContainer").style.display = "block";
+    }
+
+    document.getElementById('currentAge').addEventListener('input', enableButtonIfValid);
+  </script>
+</body>
+</html>
